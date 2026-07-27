@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # --------------------------------------------------
+  # Database 1 cho Auth Service (auth-ms)
+  # --------------------------------------------------
+  auth-db:
+    image: mysql:8.0
+    container_name: auth_mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: auth_db
+    ports:
+      - '3306:3306'
+    volumes:
+      - auth_db_data:/var/lib/mysql
+
+  # --------------------------------------------------
+  # Database 2 cho Crypto Core Service (BE-ms)
+  # --------------------------------------------------
+  crypto-db:
+    image: mysql:8.0
+    container_name: crypto_mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: crypto_db
+    ports:
+      - '3307:3306' # Mở cổng 3307 bên ngoài máy host để tránh trùng với cổng 3306
+    volumes:
+      - crypto_db_data:/var/lib/mysql
+
+volumes:
+  auth_db_data:
+  crypto_db_data:

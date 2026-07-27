@@ -1,11 +1,23 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 import { CryptoModule } from './crypto/crypto.module';
+import { Watchlist } from './crypto/watchlist.entity';
 
 @Module({
-  imports: [CryptoModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 3307, // Chú ý: Cổng 3307 của crypto-db trong Docker!
+      username: 'root',
+      password: 'rootpassword',
+      database: 'crypto_db',
+      entities: [Watchlist],
+      synchronize: true,
+    }),
+    CryptoModule,
+  ],
 })
 export class AppModule {}

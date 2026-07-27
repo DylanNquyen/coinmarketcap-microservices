@@ -1,10 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { firstValueFrom } from 'rxjs';
+import { Watchlist } from './watchlist.entity';
 
 @Injectable()
 export class CryptoService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    @InjectRepository(Watchlist)
+    private readonly watchlistRepository: Repository<Watchlist>,
+  ) {}
 
   async getTopCoins() {
     try {
@@ -33,5 +40,14 @@ export class CryptoService {
       // Nếu API ngoài bị giới hạn lượt gọi (Rate limit), trả về mảng rỗng để không sập app
       return [];
     }
+  }
+  async addToWatchlist(userId: number, coinId: string) {
+    const item = this.watchlistRepository.create({ userId, coinId });
+    return await this.watchlistRepository.save(item);
+  }
+
+  // Lấy danh sách Watchlist của User
+  async getUserWatchlist(userId: number) {
+    return await this.watchlistRepository.find({ where: { userId } });
   }
 }
