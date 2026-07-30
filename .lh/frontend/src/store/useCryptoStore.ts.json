@@ -1,0 +1,38 @@
+{
+    "sourceFile": "frontend/src/store/useCryptoStore.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 5,
+            "patches": [
+                {
+                    "date": 1785432476634,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1785432498975,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -15,8 +15,9 @@\n   priceChange7d: number;\r\n   marketCap: number;\r\n   volume24h: number;\r\n   circulatingSupply: number;\r\n+  isUp?: boolean; // Cờ nhận biết tăng/giảm để đổi màu xanh/đỏ\r\n }\r\n \r\n interface CryptoState {\r\n   coins: Coin[];\r\n"
+                },
+                {
+                    "date": 1785432515272,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -21,9 +21,12 @@\n \r\n interface CryptoState {\r\n   coins: Coin[];\r\n   loading: boolean;\r\n+  socket: Socket | null;\r\n   fetchCoins: () => Promise<void>;\r\n+  connectSocket: () => void;\r\n+  disconnectSocket: () => void;\r\n }\r\n \r\n export const useCryptoStore = create<CryptoState>((set) => ({\r\n   coins: [],\r\n"
+                },
+                {
+                    "date": 1785432548563,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -21,12 +21,9 @@\n \r\n interface CryptoState {\r\n   coins: Coin[];\r\n   loading: boolean;\r\n-  socket: Socket | null;\r\n   fetchCoins: () => Promise<void>;\r\n-  connectSocket: () => void;\r\n-  disconnectSocket: () => void;\r\n }\r\n \r\n export const useCryptoStore = create<CryptoState>((set) => ({\r\n   coins: [],\r\n"
+                },
+                {
+                    "date": 1785432559518,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -21,9 +21,12 @@\n \r\n interface CryptoState {\r\n   coins: Coin[];\r\n   loading: boolean;\r\n+  socket: Socket | null;\r\n   fetchCoins: () => Promise<void>;\r\n+  connectSocket: () => void;\r\n+  disconnectSocket: () => void;\r\n }\r\n \r\n export const useCryptoStore = create<CryptoState>((set) => ({\r\n   coins: [],\r\n"
+                },
+                {
+                    "date": 1785432575797,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -27,19 +27,51 @@\n   connectSocket: () => void;\r\n   disconnectSocket: () => void;\r\n }\r\n \r\n-export const useCryptoStore = create<CryptoState>((set) => ({\r\n+// ⚠️ QUAN TRỌNG: Gọi API qua Kong Gateway Port 8000\r\n+const GATEWAY_URL = 'http://localhost:8000';\r\n+const BACKEND_WS_URL = 'http://localhost:3001'; // WebSocket kết nối thẳng tới backend\r\n+\r\n+export const useCryptoStore = create<CryptoState>((set, get) => ({\r\n   coins: [],\r\n   loading: false,\r\n+  socket: null,\r\n+\r\n+  // 1. Gọi REST API lấy dữ liệu qua Kong Gateway\r\n   fetchCoins: async () => {\r\n     set({ loading: true });\r\n     try {\r\n-      // Gọi tới endpoint NestJS đã chạy trong hình image_cfce19.png\r\n-      const response = await axios.get('http://localhost:3001/api/crypto');\r\n+      const response = await axios.get(`${GATEWAY_URL}/api/crypto`);\r\n       set({ coins: response.data, loading: false });\r\n     } catch (error) {\r\n-      console.error('Lỗi khi fetch dữ liệu từ Backend:', error);\r\n+      console.error('Lỗi fetch coins qua Gateway:', error);\r\n       set({ loading: false });\r\n     }\r\n   },\r\n+\r\n+  // 2. Kết nối WebSocket để nhận biến động giá Realtime\r\n+  connectSocket: () => {\r\n+    if (get().socket) return; // Tránh tạo lại socket trùng lặp\r\n+\r\n+    const socket = io(BACKEND_WS_URL);\r\n+\r\n+    socket.on('connect', () => {\r\n+      console.log('⚡ Frontend đã kết nối Realtime WebSocket!');\r\n+    });\r\n+\r\n+    // Lắng nghe event 'price_updates' do CryptoGateway ở backend bắn xuống\r\n+    socket.on('price_updates', (updatedCoins: Coin[]) => {\r\n+      set({ coins: updatedCoins });\r\n+    });\r\n+\r\n+    set({ socket });\r\n+  },\r\n+\r\n+  disconnectSocket: () => {\r\n+    const socket = get().socket;\r\n+    if (socket) {\r\n+      socket.disconnect();\r\n+      set({ socket: null });\r\n+    }\r\n+  },\r\n }));\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1785432476634,
+            "name": "Commit-0",
+            "content": "import { create } from 'zustand';\r\nimport axios from 'axios';\r\nimport { io, Socket } from 'socket.io-client';\r\n\r\n// Định nghĩa kiểu dữ liệu cho Coin dựa trên dữ liệu thật từ Backend\r\nexport interface Coin {\r\n  id: string;\r\n  rank: number;\r\n  name: string;\r\n  symbol: string;\r\n  image: string;\r\n  price: number;\r\n  priceChange1h: number;\r\n  priceChange24h: number;\r\n  priceChange7d: number;\r\n  marketCap: number;\r\n  volume24h: number;\r\n  circulatingSupply: number;\r\n}\r\n\r\ninterface CryptoState {\r\n  coins: Coin[];\r\n  loading: boolean;\r\n  fetchCoins: () => Promise<void>;\r\n}\r\n\r\nexport const useCryptoStore = create<CryptoState>((set) => ({\r\n  coins: [],\r\n  loading: false,\r\n  fetchCoins: async () => {\r\n    set({ loading: true });\r\n    try {\r\n      // Gọi tới endpoint NestJS đã chạy trong hình image_cfce19.png\r\n      const response = await axios.get('http://localhost:3001/api/crypto');\r\n      set({ coins: response.data, loading: false });\r\n    } catch (error) {\r\n      console.error('Lỗi khi fetch dữ liệu từ Backend:', error);\r\n      set({ loading: false });\r\n    }\r\n  },\r\n}));"
+        }
+    ]
+}

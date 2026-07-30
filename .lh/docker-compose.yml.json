@@ -1,0 +1,26 @@
+{
+    "sourceFile": "docker-compose.yml",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1785211196677,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1785211277117,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -30,9 +30,57 @@\n       - '3307:3306' # Mở cổng 3307 bên ngoài máy host để tránh trùng với cổng 3306\r\n     volumes:\r\n       - crypto_db_data:/var/lib/mysql\r\n \r\n-  \r\n+  # --------------------------------------------------\r\n+  # Kong API Gateway\r\n+  # --------------------------------------------------\r\n+  kong-database:\r\n+    image: postgres:13\r\n+    container_name: kong_db\r\n+    environment:\r\n+      POSTGRES_USER: kong\r\n+      POSTGRES_DB: kong\r\n+      POSTGRES_PASSWORD: kongpassword\r\n+    ports:\r\n+      - '5432:5432'\r\n+    volumes:\r\n+      - kong_db_data:/var/lib/postgresql/data\r\n \r\n+  kong-migration:\r\n+    image: kong:3.4\r\n+    container_name: kong_migration\r\n+    command: kong migrations bootstrap\r\n+    environment:\r\n+      KONG_DATABASE: postgres\r\n+      KONG_PG_HOST: kong-database\r\n+      KONG_PG_PASSWORD: kongpassword\r\n+      KONG_PG_USER: kong\r\n+    depends_on:\r\n+      - kong-database\r\n+    restart: on-failure\r\n+\r\n+  kong:\r\n+    image: kong:3.4\r\n+    container_name: kong_gateway\r\n+    restart: always\r\n+    environment:\r\n+      KONG_DATABASE: postgres\r\n+      KONG_PG_HOST: kong-database\r\n+      KONG_PG_PASSWORD: kongpassword\r\n+      KONG_PG_USER: kong\r\n+      KONG_PROXY_ACCESS_LOG: /dev/stdout\r\n+      KONG_ADMIN_ACCESS_LOG: /dev/stdout\r\n+      KONG_PROXY_ERROR_LOG: /dev/stderr\r\n+      KONG_ADMIN_ERROR_LOG: /dev/stderr\r\n+      KONG_ADMIN_LISTEN: 0.0.0.0:8001, 0.0.0.0:8444 ssl\r\n+    ports:\r\n+      - '8000:8000' # Cổng Proxy dành cho Client/Frontend gọi vào\r\n+      - '8443:8443'\r\n+      - '8001:8001' # Cổng Admin API để cấu hình Route/Service\r\n+      - '8444:8444'\r\n+    depends_on:\r\n+      - kong-migration\r\n+\r\n volumes:\r\n   auth_db_data:\r\n   crypto_db_data:\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1785234642209,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -82,5 +82,6 @@\n       - kong-migration\r\n \r\n volumes:\r\n   auth_db_data:\r\n-  crypto_db_data:\n\\ No newline at end of file\n+  crypto_db_data:\r\n+  kong_db_data:\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1785211196677,
+            "name": "Commit-0",
+            "content": "version: '3.8'\r\n\r\nservices:\r\n  # --------------------------------------------------\r\n  # Database 1 cho Auth Service (auth-ms)\r\n  # --------------------------------------------------\r\n  auth-db:\r\n    image: mysql:8.0\r\n    container_name: auth_mysql_db\r\n    restart: always\r\n    environment:\r\n      MYSQL_ROOT_PASSWORD: rootpassword\r\n      MYSQL_DATABASE: auth_db\r\n    ports:\r\n      - '3306:3306'\r\n    volumes:\r\n      - auth_db_data:/var/lib/mysql\r\n\r\n  # --------------------------------------------------\r\n  # Database 2 cho Crypto Core Service (BE-ms)\r\n  # --------------------------------------------------\r\n  crypto-db:\r\n    image: mysql:8.0\r\n    container_name: crypto_mysql_db\r\n    restart: always\r\n    environment:\r\n      MYSQL_ROOT_PASSWORD: rootpassword\r\n      MYSQL_DATABASE: crypto_db\r\n    ports:\r\n      - '3307:3306' # Mở cổng 3307 bên ngoài máy host để tránh trùng với cổng 3306\r\n    volumes:\r\n      - crypto_db_data:/var/lib/mysql\r\n\r\n  \r\n\r\nvolumes:\r\n  auth_db_data:\r\n  crypto_db_data:"
+        }
+    ]
+}

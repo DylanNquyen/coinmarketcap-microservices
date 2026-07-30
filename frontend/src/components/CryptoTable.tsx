@@ -3,9 +3,17 @@ import { Table, Avatar } from 'antd';
 import { useCryptoStore, type Coin } from '../store/useCryptoStore';
 
 export const CryptoTable: React.FC = () => {
-  const { coins, loading } = useCryptoStore();
+  const { coins, loading, fetchCoins, connectSocket, disconnectSocket } = useCryptoStore();
 
-  // Định nghĩa các cột cho bảng AntD giống CoinMarketCap
+  useEffect(() => {
+    fetchCoins();
+    connectSocket(); // Bật kết nối Realtime khi vừa load trang
+
+    return () => {
+      disconnectSocket(); // Ngắt khi unmount
+    };
+  }, []);
+
   const columns = [
     {
       title: '#',
@@ -29,17 +37,15 @@ export const CryptoTable: React.FC = () => {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
-      render: (price: number) => `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}`,
-    },
-    {
-      title: '1h %',
-      dataIndex: 'priceChange1h',
-      key: 'priceChange1h',
-      render: (val: number) => (
-        <span style={{ color: val >= 0 ? '#16c784' : '#ea3943' }}>
-          {val >= 0 ? '▲' : '▼'} {Math.abs(val).toFixed(2)}%
-        </span>
-      ),
+      render: (price: number, record: Coin) => {
+        // Tự động đổi màu chữ/nền tùy theo giá vừa tăng hay giảm
+        const color = record.isUp === undefined ? '#fff' : record.isUp ? '#16c784' : '#ea3943';
+        return (
+          <span style={{ color, fontWeight: 'bold', transition: 'all 0.3s ease' }}>
+            ${price?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 8 })}
+          </span>
+        );
+      },
     },
     {
       title: '24h %',
@@ -47,17 +53,7 @@ export const CryptoTable: React.FC = () => {
       key: 'priceChange24h',
       render: (val: number) => (
         <span style={{ color: val >= 0 ? '#16c784' : '#ea3943' }}>
-          {val >= 0 ? '▲' : '▼'} {Math.abs(val).toFixed(2)}%
-        </span>
-      ),
-    },
-    {
-      title: '7d %',
-      dataIndex: 'priceChange7d',
-      key: 'priceChange7d',
-      render: (val: number) => (
-        <span style={{ color: val >= 0 ? '#16c784' : '#ea3943' }}>
-          {val >= 0 ? '▲' : '▼'} {Math.abs(val).toFixed(2)}%
+          {val >= 0 ? '▲' : '▼'} {Math.abs(val || 0).toFixed(2)}%
         </span>
       ),
     },
@@ -65,19 +61,13 @@ export const CryptoTable: React.FC = () => {
       title: 'Market Cap',
       dataIndex: 'marketCap',
       key: 'marketCap',
-      render: (cap: number) => `$${cap.toLocaleString()}`,
+      render: (cap: number) => `$${cap?.toLocaleString()}`,
     },
     {
-      title: 'Volume(24h)',
+      title: 'Volume (24h)',
       dataIndex: 'volume24h',
       key: 'volume24h',
-      render: (vol: number) => `$${vol.toLocaleString()}`,
-    },
-    {
-      title: 'Circulating Supply',
-      dataIndex: 'circulatingSupply',
-      key: 'circulatingSupply',
-      render: (supply: number, record: Coin) => `${Math.floor(supply).toLocaleString()} ${record.symbol}`,
+      render: (vol: number) => `$${vol?.toLocaleString()}`,
     },
   ];
 
@@ -92,3 +82,5 @@ export const CryptoTable: React.FC = () => {
     />
   );
 };
+
+export default CryptoTable;

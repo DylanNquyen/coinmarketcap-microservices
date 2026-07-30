@@ -35,11 +35,23 @@ export class CryptoService {
         volume24h: coin.total_volume,
         circulatingSupply: coin.circulating_supply,
       }));
-    } catch (error) {
-      console.error('Lỗi khi gọi API bên ngoài:', error.message);
-      // Nếu API ngoài bị giới hạn lượt gọi (Rate limit), trả về mảng rỗng để không sập app
-      return [];
-    }
+    } catch (error: any) {
+  const status = error?.response?.status;
+  const message = error?.message ?? 'Unknown error';
+
+  if (status === 429) {
+    console.error(
+      '⚠️ CoinGecko trả về 429: đã vượt giới hạn request. Backend sẽ dùng cache và thử lại sau.',
+    );
+  } else {
+    console.error(
+      `Lỗi khi gọi CoinGecko${status ? ` (${status})` : ''}:`,
+      message,
+    );
+  }
+
+  return [];
+}
   }
   async addToWatchlist(userId: number, coinId: string) {
     const item = this.watchlistRepository.create({ userId, coinId });

@@ -191,7 +191,7 @@ Quy trình hoạt động:
 
 ---
 
-# 🏗 Kiến trúc hệ thống
+# Kiến trúc hệ thống
 
 ```text
                  React Frontend
@@ -220,7 +220,7 @@ Quy trình hoạt động:
 
 ---
 
-# 🛠 Công nghệ sử dụng
+# Công nghệ sử dụng
 
 ## Frontend
 

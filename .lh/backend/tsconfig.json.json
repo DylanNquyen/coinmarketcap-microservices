@@ -1,0 +1,38 @@
+{
+    "sourceFile": "backend/tsconfig.json",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 5,
+            "patches": [
+                {
+                    "date": 1785431244187,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1785431261670,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n {\r\n   \"compilerOptions\": {\r\n-    \"module\": \"nodenext\",\r\n+    \"module\": \"commonjs\",\r\n     \"moduleResolution\": \"nodenext\",\r\n     \"resolvePackageJsonExports\": true,\r\n     \"esModuleInterop\": true,\r\n     \"isolatedModules\": true,\r\n"
+                },
+                {
+                    "date": 1785431273385,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n {\r\n   \"compilerOptions\": {\r\n-    \"module\": \"commonjs\",\r\n+    \"module\": \"nodenext\",\r\n     \"moduleResolution\": \"nodenext\",\r\n     \"resolvePackageJsonExports\": true,\r\n     \"esModuleInterop\": true,\r\n     \"isolatedModules\": true,\r\n@@ -9,9 +9,9 @@\n     \"removeComments\": true,\r\n     \"emitDecoratorMetadata\": true,\r\n     \"experimentalDecorators\": true,\r\n     \"allowSyntheticDefaultImports\": true,\r\n-    \"target\": \"ES2021\",\r\n+    \"target\": \"ES2023\",\r\n     \"sourceMap\": true,\r\n     \"outDir\": \"./dist\",\r\n     \"baseUrl\": \"./\",\r\n     \"incremental\": true,\r\n"
+                },
+                {
+                    "date": 1785431482084,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n {\r\n   \"compilerOptions\": {\r\n-    \"module\": \"nodenext\",\r\n+    \"module\": \"NodeNext\",\r\n     \"moduleResolution\": \"nodenext\",\r\n     \"resolvePackageJsonExports\": true,\r\n     \"esModuleInterop\": true,\r\n     \"isolatedModules\": true,\r\n"
+                },
+                {
+                    "date": 1785431514115,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,9 +9,9 @@\n     \"removeComments\": true,\r\n     \"emitDecoratorMetadata\": true,\r\n     \"experimentalDecorators\": true,\r\n     \"allowSyntheticDefaultImports\": true,\r\n-    \"target\": \"ES2023\",\r\n+    \"target\": \"ES2022\",\r\n     \"sourceMap\": true,\r\n     \"outDir\": \"./dist\",\r\n     \"baseUrl\": \"./\",\r\n     \"incremental\": true,\r\n"
+                },
+                {
+                    "date": 1785432017521,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n {\r\n   \"compilerOptions\": {\r\n-    \"module\": \"NodeNext\",\r\n+    \"module\": \"nodenext\",\r\n     \"moduleResolution\": \"nodenext\",\r\n     \"resolvePackageJsonExports\": true,\r\n     \"esModuleInterop\": true,\r\n     \"isolatedModules\": true,\r\n@@ -9,9 +9,9 @@\n     \"removeComments\": true,\r\n     \"emitDecoratorMetadata\": true,\r\n     \"experimentalDecorators\": true,\r\n     \"allowSyntheticDefaultImports\": true,\r\n-    \"target\": \"ES2022\",\r\n+    \"target\": \"ES2023\",\r\n     \"sourceMap\": true,\r\n     \"outDir\": \"./dist\",\r\n     \"baseUrl\": \"./\",\r\n     \"incremental\": true,\r\n"
+                }
+            ],
+            "date": 1785431244187,
+            "name": "Commit-0",
+            "content": "{\r\n  \"compilerOptions\": {\r\n    \"module\": \"nodenext\",\r\n    \"moduleResolution\": \"nodenext\",\r\n    \"resolvePackageJsonExports\": true,\r\n    \"esModuleInterop\": true,\r\n    \"isolatedModules\": true,\r\n    \"declaration\": true,\r\n    \"removeComments\": true,\r\n    \"emitDecoratorMetadata\": true,\r\n    \"experimentalDecorators\": true,\r\n    \"allowSyntheticDefaultImports\": true,\r\n    \"target\": \"ES2021\",\r\n    \"sourceMap\": true,\r\n    \"outDir\": \"./dist\",\r\n    \"baseUrl\": \"./\",\r\n    \"incremental\": true,\r\n    \"skipLibCheck\": true,\r\n    \"strictNullChecks\": true,\r\n    \"forceConsistentCasingInFileNames\": true,\r\n    \"noImplicitAny\": false,\r\n    \"strictBindCallApply\": false,\r\n    \"noFallthroughCasesInSwitch\": false\r\n  }\r\n}\r\n"
+        }
+    ]
+}
