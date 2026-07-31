@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { Layout, Menu, Typography } from 'antd';
 import { CryptoTable } from './components/CryptoTable';
-import { useCryptoStore } from './store/useCryptoStore'; // Bỏ import 'Coin' vì không dùng mock nữa
+import { AiCopilot } from './components/AiCopilot';
+import { useCryptoStore } from './store/useCryptoStore';
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
@@ -39,6 +40,7 @@ const App: React.FC = () => {
           <CryptoTable />
         </div>
       </Content>
+      <AiCopilot />
     </Layout>
   );
 };

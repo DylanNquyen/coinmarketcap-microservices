@@ -10,5 +10,6 @@ import { Watchlist } from './watchlist.entity';
   imports: [HttpModule, TypeOrmModule.forFeature([Watchlist])],
   controllers: [CryptoController],
   providers: [CryptoService, CryptoGateway],
+  exports: [CryptoService], 
 })
 export class CryptoModule {}

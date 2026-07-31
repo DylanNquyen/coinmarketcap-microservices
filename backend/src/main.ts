@@ -6,8 +6,9 @@ async function bootstrap() {
 
   // 1. Bật CORS cho phép Frontend kết nối
   app.enableCors({
-    origin: '*', // Trong môi trường dev có thể để '*' hoặc điền chính xác URL của Frontend React
+    origin: 'http://localhost:5173', // Trong môi trường dev có thể để '*' hoặc điền chính xác URL của Frontend React
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   // 2. Cấu hình tiền tố URL (Tùy chọn nhưng nên làm, ví dụ: http://localhost:3001/api/...)

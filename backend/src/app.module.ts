@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { CryptoModule } from './crypto/crypto.module';
 import { Watchlist } from './crypto/watchlist.entity';
+import { AiModule } from './ai/ai.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { Watchlist } from './crypto/watchlist.entity';
       synchronize: true,
     }),
     CryptoModule,
+    AiModule,
   ],
 })
 export class AppModule {}
