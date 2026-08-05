@@ -1,0 +1,26 @@
+.percentage {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--cmc-space-1);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.indicator {
+  font-size: 9px;
+}
+
+.positive {
+  color: var(--cmc-positive);
+}
+
+.negative {
+  color: var(--cmc-negative);
+}
+
+.neutral {
+  color: var(--cmc-text-secondary);
+}

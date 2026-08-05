@@ -1,0 +1,366 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  width: 100%;
+  height: var(--cmc-header-height);
+  border-bottom: 1px solid var(--cmc-border-primary);
+  background-color: var(--cmc-bg-primary);
+}
+
+.inner {
+  display: flex;
+  width: 100%;
+  max-width: 1920px;
+  height: 100%;
+  margin-inline: auto;
+  padding-inline: var(--cmc-page-padding-inline);
+  align-items: center;
+  gap: var(--cmc-space-4);
+}
+
+.logo {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  color: var(--cmc-text-primary);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.logoMark {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  font-size: 13px;
+}
+
+.desktopNavigation {
+  min-width: 0;
+}
+
+.navigationList {
+  display: flex;
+  align-items: center;
+  gap: var(--cmc-space-4);
+}
+
+.navigationLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cmc-space-1);
+  color: var(--cmc-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  white-space: nowrap;
+  transition: color var(--cmc-transition-fast);
+}
+
+.navigationLink:hover {
+  color: var(--cmc-brand-primary);
+}
+
+.dropdownIndicator {
+  color: var(--cmc-text-secondary);
+  font-size: 10px;
+}
+
+.actions {
+  display: flex;
+  margin-left: auto;
+  align-items: center;
+  gap: var(--cmc-space-3);
+}
+
+.utilityLink {
+  color: var(--cmc-text-primary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  white-space: nowrap;
+}
+
+.utilityLink:hover {
+  color: var(--cmc-brand-primary);
+}
+
+.searchButton {
+  display: inline-flex;
+  width: 196px;
+  height: 32px;
+  padding-inline: var(--cmc-space-3);
+  align-items: center;
+  gap: var(--cmc-space-2);
+  border: 1px solid var(--cmc-border-secondary);
+  border-radius: var(--cmc-radius-medium);
+  background-color: var(--cmc-bg-elevated);
+  color: var(--cmc-text-secondary);
+  cursor: pointer;
+}
+
+.searchButton:hover {
+  border-color: var(--cmc-border-interactive);
+}
+
+.searchIcon {
+  flex-shrink: 0;
+  font-size: 18px;
+}
+
+.searchText {
+  flex: 1;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shortcut {
+  min-width: 20px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background-color: var(--cmc-bg-hover);
+  color: var(--cmc-text-secondary);
+  font-family: inherit;
+  font-size: 11px;
+  text-align: center;
+}
+
+.mobileSearchButton,
+.menuButton {
+  display: none;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  color: var(--cmc-text-secondary);
+  cursor: pointer;
+}
+
+.menuButton {
+  flex-direction: column;
+  gap: 4px;
+}
+
+.menuButton span {
+  width: 18px;
+  height: 2px;
+  border-radius: 999px;
+  background-color: currentColor;
+}
+
+.loginButton {
+  height: 32px;
+  padding-inline: 14px;
+  flex-shrink: 0;
+  border: 1px solid var(--cmc-brand-primary);
+  border-radius: var(--cmc-radius-medium);
+  background-color: var(--cmc-brand-primary);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition:
+    filter var(--cmc-transition-fast),
+    transform var(--cmc-transition-fast);
+}
+
+.loginButton:hover {
+  filter: brightness(1.08);
+}
+
+.loginButton:active {
+  transform: translateY(1px);
+}
+
+.loginButton:focus-visible,
+.accountButton:focus-visible {
+  outline: 2px solid var(--cmc-brand-primary);
+  outline-offset: 2px;
+}
+
+.account {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.accountButton {
+  display: inline-flex;
+  height: 34px;
+  padding: 2px 8px 2px 3px;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--cmc-border-secondary);
+  border-radius: 999px;
+  background-color: var(--cmc-bg-elevated);
+  color: var(--cmc-text-primary);
+  cursor: pointer;
+  font: inherit;
+}
+
+.accountButton:hover {
+  border-color: var(--cmc-border-interactive);
+}
+
+.avatar {
+  display: inline-flex;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background:
+    linear-gradient(
+      135deg,
+      var(--cmc-brand-primary),
+      #8247e5
+    );
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.accountName {
+  max-width: 100px;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.accountChevron {
+  color: var(--cmc-text-secondary);
+  font-size: 9px;
+}
+
+.accountMenu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 500;
+  width: 220px;
+  padding: 8px;
+  border: 1px solid var(--cmc-border-primary);
+  border-radius: 10px;
+  background-color: var(--cmc-bg-elevated);
+  box-shadow: 0 16px 48px rgb(0 0 0 / 36%);
+}
+
+.accountInfo {
+  padding: 8px 10px 12px;
+}
+
+.accountEmail {
+  display: block;
+  overflow: hidden;
+  color: var(--cmc-text-secondary);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.accountMenuItem {
+  display: flex;
+  width: 100%;
+  min-height: 36px;
+  padding-inline: 10px;
+  align-items: center;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--cmc-text-primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+}
+
+.accountMenuItem:hover {
+  background-color: var(--cmc-bg-hover);
+}
+
+.accountMenuDivider {
+  height: 1px;
+  margin: 6px 4px;
+  background-color: var(--cmc-border-primary);
+}
+
+.logoutButton {
+  color: #ea3943;
+}
+
+@media (max-width: 1279.98px) {
+  .navigationList {
+    gap: var(--cmc-space-3);
+  .accountName {
+  display: none;
+}
+  }
+
+  .navigationLink {
+    font-size: 12px;
+  }
+
+  .utilityLink {
+    display: none;
+  }
+}
+
+@media (max-width: 1023.98px) {
+  .searchButton {
+    display: none;
+  }
+
+  .mobileSearchButton {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .desktopNavigation {
+    display: none;
+  }
+
+  .menuButton {
+    display: inline-flex;
+  }
+
+  .inner {
+    gap: var(--cmc-space-2);
+  }
+}
+
+@media (max-width: 429.98px) {
+  .logo {
+    font-size: 16px;
+  }
+
+  .logoMark {
+    width: 22px;
+    height: 22px;
+  }
+
+  .loginButton {
+  padding-inline: 10px;
+}
+
+.accountButton {
+  padding-right: 3px;
+}
+
+.accountChevron {
+  display: none;
+}
+}

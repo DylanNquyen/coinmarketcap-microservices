@@ -1,0 +1,1 @@
+export { TrendingTopics } from './TrendingTopics';

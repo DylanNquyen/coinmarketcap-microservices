@@ -1,29 +1,65 @@
-import { Controller, Get, Post, Body, Query, UseGuards, Req} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+
 import { CryptoService } from './crypto.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
+type AuthenticatedRequest = {
+  user: {
+    sub: number;
+  };
+};
+
 @Controller('crypto')
 export class CryptoController {
-  constructor(private readonly cryptoService: CryptoService) {}
+  constructor(
+    private readonly cryptoService: CryptoService,
+  ) {}
 
   @Get()
-  async getCoins() {
-    return await this.cryptoService.getTopCoins();
+  getCoins() {
+    return this.cryptoService.getTopCoins();
   }
 
-  // BẢO VỆ API WATCHLIST BẰNG JWT GUARD
   @UseGuards(JwtAuthGuard)
   @Post('watchlist')
-  async addToWatchlist(@Req() req: any, @Body() body: { coinId: string }) {
-    // req.user được gán tự động từ JwtAuthGuard sau khi verify thành công từ auth-ms
-    const userId = req.user.sub; 
-    return await this.cryptoService.addToWatchlist(userId, body.coinId);
+  addToWatchlist(
+    @Req() request: AuthenticatedRequest,
+    @Body() body: { coinId: string },
+  ) {
+    return this.cryptoService.addToWatchlist(
+      request.user.sub,
+      body.coinId,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('watchlist')
-  async getWatchlist(@Req() req: any) {
-    const userId = req.user.sub;
-    return await this.cryptoService.getUserWatchlist(userId);
+  getWatchlist(
+    @Req() request: AuthenticatedRequest,
+  ) {
+    return this.cryptoService.getUserWatchlist(
+      request.user.sub,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('watchlist/:coinId')
+  removeFromWatchlist(
+    @Req() request: AuthenticatedRequest,
+    @Param('coinId') coinId: string,
+  ) {
+    return this.cryptoService.removeFromWatchlist(
+      request.user.sub,
+      coinId,
+    );
   }
 }

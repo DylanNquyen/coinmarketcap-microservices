@@ -1,0 +1,59 @@
+:root {
+  color-scheme: dark;
+
+  /* Background */
+  --cmc-bg-primary: #0d1421;
+  --cmc-bg-secondary: #171924;
+  --cmc-bg-elevated: #222531;
+  --cmc-bg-card: #292d3f;
+  --cmc-bg-hover: #323546;
+
+  /* Text */
+  --cmc-text-primary: #ffffff;
+  --cmc-text-secondary: #a1a7bb;
+  --cmc-text-muted: #858ca2;
+  --cmc-text-disabled: #646b80;
+
+  /* Border */
+  --cmc-border-primary: #222531;
+  --cmc-border-secondary: #323546;
+  --cmc-border-interactive: #40424e;
+
+  /* Brand */
+  --cmc-brand-primary: #6188ff;
+  --cmc-brand-primary-hover: #3861fb;
+
+  /* Status */
+  --cmc-positive: #16c784;
+  --cmc-negative: #ea3943;
+  --cmc-warning: #f5b97f;
+
+  /* Spacing */
+  --cmc-space-1: 4px;
+  --cmc-space-2: 8px;
+  --cmc-space-3: 12px;
+  --cmc-space-4: 16px;
+  --cmc-space-5: 24px;
+  --cmc-space-6: 32px;
+  --cmc-space-7: 48px;
+
+  /* Radius */
+  --cmc-radius-small: 4px;
+  --cmc-radius-medium: 8px;
+  --cmc-radius-large: 12px;
+  --cmc-radius-pill: 999px;
+
+  /* Layout */
+  --cmc-page-padding-inline: 16px;
+  --cmc-header-height: 48px;
+  --cmc-secondary-nav-height: 57px;
+
+  /* Shadow */
+  --cmc-shadow-dropdown:
+    0 4px 24px rgba(88, 102, 126, 0.08),
+    0 1px 2px rgba(88, 102, 126, 0.12);
+
+  /* Transition */
+  --cmc-transition-fast: 150ms ease;
+  --cmc-transition-normal: 250ms ease;
+}

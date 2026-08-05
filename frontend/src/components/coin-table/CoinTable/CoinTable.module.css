@@ -1,0 +1,351 @@
+.section {
+  width: 100%;
+}
+
+.tableContainer {
+  width: 100%;
+  margin-top: var(--cmc-space-3);
+  overflow-x: auto;
+  border-top: 1px solid var(--cmc-border-primary);
+  scrollbar-width: thin;
+  scrollbar-color:
+    var(--cmc-border-secondary)
+    transparent;
+}
+
+.table {
+  width: 100%;
+  min-width: 1540px;
+  border-spacing: 0;
+  border-collapse: separate;
+  table-layout: fixed;
+}
+
+.tableHead {
+  top: calc(
+    var(--cmc-header-height) +
+    var(--cmc-secondary-nav-height)
+  );
+  z-index: var(--cmc-z-sticky, 100);
+  background-color: var(--cmc-bg-primary);
+}
+
+.headerCell {
+  height: 44px;
+  padding-inline: var(--cmc-space-3);
+  border-bottom: 1px solid var(--cmc-border-primary);
+  background-color: var(--cmc-bg-primary);
+  color: var(--cmc-text-primary);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.tableRow {
+  transition: background-color var(--cmc-transition-fast);
+}
+
+.tableRow:hover {
+  background-color: rgba(255, 255, 255, 0.025);
+}
+
+.cell {
+  height: 64px;
+  padding-inline: var(--cmc-space-3);
+  border-bottom: 1px solid var(--cmc-border-primary);
+  color: var(--cmc-text-primary);
+  font-size: 13px;
+  line-height: 20px;
+  vertical-align: middle;
+}
+
+.rankColumn {
+  width: 48px;
+  color: var(--cmc-text-secondary);
+  text-align: center;
+}
+
+.nameColumn {
+  width: 300px;
+}
+
+.priceColumn {
+  width: 140px;
+  text-align: right;
+}
+
+.percentageColumn {
+  width: 100px;
+  text-align: right;
+}
+
+.marketCapColumn {
+  width: 160px;
+  text-align: right;
+}
+
+.volumeColumn {
+  width: 160px;
+  text-align: right;
+}
+
+.supplyColumn {
+  width: 190px;
+  text-align: right;
+}
+
+.sparklineColumn {
+  width: 180px;
+  text-align: right;
+}
+
+.sparkline {
+  width: 100%;
+  min-width: 120px;
+  max-width: 160px;
+  margin-left: auto;
+  padding-right: 8px;
+}
+
+.sparklinePositive {
+  color: var(--cmc-positive);
+}
+
+.sparklineNegative {
+  color: var(--cmc-negative);
+}
+
+.sparklineEmpty {
+  color: var(--cmc-text-secondary);
+  font-size: 12px;
+}
+
+.coinIdentity {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--cmc-space-2);
+}
+
+.coinLogo {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.coinNames {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.coinName {
+  overflow: hidden;
+  color: var(--cmc-text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.coinSymbol {
+  flex-shrink: 0;
+  color: var(--cmc-text-secondary);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+}
+
+.buyButton {
+  height: 22px;
+  margin-left: auto;
+  padding-inline: 7px;
+  flex-shrink: 0;
+  border: 1px solid var(--cmc-brand-primary);
+  border-radius: var(--cmc-radius-pill);
+  color: var(--cmc-brand-primary);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 18px;
+}
+
+.buyButton:hover {
+  background-color: rgba(56, 97, 251, 0.12);
+}
+
+.watchlistButton {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--cmc-text-secondary);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  transition:
+    color var(--cmc-transition-fast),
+    background-color var(--cmc-transition-fast),
+    transform var(--cmc-transition-fast);
+}
+
+.watchlistButton:hover:not(:disabled) {
+  background-color: var(--cmc-bg-hover);
+  color: var(--cmc-text-primary);
+}
+
+.watchlistButton:active:not(:disabled) {
+  transform: scale(0.9);
+}
+
+.watchlistButton:focus-visible {
+  outline: 2px solid var(--cmc-brand-primary);
+  outline-offset: 2px;
+}
+
+.watchlistButtonActive {
+  color: #f5b700;
+}
+
+.watchlistButtonActive:hover:not(:disabled) {
+  color: #ffc933;
+}
+
+.watchlistButton:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.watchlistButton:hover {
+  color: var(--cmc-brand-primary);
+}
+
+.watchlistColumn {
+  width: 42px;
+  padding-right: 0;
+  text-align: center;
+}
+
+.emptyCell {
+  height: 160px;
+  color: var(--cmc-text-secondary);
+  font-size: 13px;
+  text-align: center;
+}
+
+.skeleton {
+  display: block;
+  width: 100%;
+  max-width: 120px;
+  height: 14px;
+  border-radius: var(--cmc-radius-small);
+  background:
+    linear-gradient(
+      90deg,
+      var(--cmc-bg-elevated) 25%,
+      var(--cmc-bg-hover) 50%,
+      var(--cmc-bg-elevated) 75%
+    );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.4s infinite;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  margin: -1px;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+@keyframes skeleton-loading {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 1279.98px) {
+  .table {
+    min-width: 1360px;
+  }
+
+  .nameColumn {
+    width: 260px;
+  }
+
+  .supplyColumn {
+    width: 170px;
+  }
+}
+
+@media (max-width: 1023.98px) {
+  .table {
+    min-width: 1180px;
+  }
+
+  .supplyColumn,
+  .sparklineColumn {
+    display: none;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .table {
+    min-width: 900px;
+  }
+
+  .headerCell,
+  .cell {
+    padding-inline: var(--cmc-space-2);
+  }
+
+  .nameColumn {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    width: 210px;
+    background-color: var(--cmc-bg-primary);
+  }
+
+  .tableRow:hover .nameColumn {
+    background-color: var(--cmc-bg-elevated);
+  }
+
+  .marketCapColumn,
+  .volumeColumn {
+    display: none;
+  }
+
+  .buyButton {
+    display: none;
+  }
+}
+
+@media (max-width: 639.98px) {
+  .table {
+    min-width: 700px;
+  }
+
+  .percentageColumn:nth-of-type(6) {
+    display: none;
+  }
+}

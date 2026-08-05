@@ -1,0 +1,1 @@
+export { CoinTable } from './CoinTable';

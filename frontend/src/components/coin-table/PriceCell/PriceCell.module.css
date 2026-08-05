@@ -1,0 +1,50 @@
+.price {
+  display: inline-flex;
+  justify-content: flex-end;
+  border-radius: var(--cmc-radius-small);
+  color: var(--cmc-text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+  transition:
+    color 300ms ease,
+    background-color 300ms ease;
+}
+
+.priceUp {
+  color: var(--cmc-positive);
+  animation: price-flash-positive 500ms ease-out;
+}
+
+.priceDown {
+  color: var(--cmc-negative);
+  animation: price-flash-negative 500ms ease-out;
+}
+
+@keyframes price-flash-positive {
+  from {
+    background-color: rgba(22, 199, 132, 0.2);
+  }
+
+  to {
+    background-color: transparent;
+  }
+}
+
+@keyframes price-flash-negative {
+  from {
+    background-color: rgba(234, 57, 67, 0.2);
+  }
+
+  to {
+    background-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .priceUp,
+  .priceDown {
+    animation: none;
+  }
+}

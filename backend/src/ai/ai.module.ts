@@ -1,10 +1,15 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+
+import { CryptoModule } from '../crypto/crypto.module';
 import { AiController } from './ai.controller';
 import { AiService } from './ai.service';
-import { CryptoModule } from '../crypto/crypto.module';
 
 @Module({
-  imports: [CryptoModule],
+  imports: [
+    ConfigModule,
+    CryptoModule,
+  ],
   controllers: [AiController],
   providers: [AiService],
 })

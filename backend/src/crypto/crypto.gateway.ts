@@ -8,6 +8,7 @@ import {
 } from '@nestjs/websockets';
 import { interval, Subscription } from 'rxjs';
 import { Server, Socket } from 'socket.io';
+
 import { CryptoService } from './crypto.service';
 
 interface CoinData {
@@ -23,8 +24,12 @@ interface CoinData {
   marketCap: number;
   volume24h: number;
   circulatingSupply: number;
+  sparkline7d: number[];
+  lastUpdated: string | null;
   isUp?: boolean;
 }
+
+const DEFAULT_REFRESH_INTERVAL_MS = 180_000;
 
 @WebSocketGateway({
   cors: {
@@ -41,103 +46,114 @@ export class CryptoGateway
   @WebSocketServer()
   server!: Server;
 
-  private priceUpdateSubscription?: Subscription;
-  private retryLoadSubscription?: Subscription;
+  private refreshSubscription?: Subscription;
   private cachedCoins: CoinData[] = [];
+  private isRefreshing = false;
+
+  private readonly refreshIntervalMs =
+    Number(process.env.COIN_REFRESH_INTERVAL_MS) ||
+    DEFAULT_REFRESH_INTERVAL_MS;
 
   constructor(private readonly cryptoService: CryptoService) {}
 
   async afterInit(): Promise<void> {
-    console.log('⚡ WebSocket Gateway đã khởi tạo thành công!');
+    console.log('⚡ Crypto WebSocket Gateway initialized');
 
-    await this.loadInitialCoins();
-    this.startRealtimePriceUpdates();
-
-    // Nếu lần gọi đầu tiên bị 429, thử tải lại mỗi 60 giây.
-    this.startRetryWhenCacheIsEmpty();
+    await this.refreshMarketData();
+    this.startMarketRefresh();
   }
 
   handleConnection(client: Socket): void {
-    console.log(`🔌 Client kết nối WebSocket: ${client.id}`);
+    console.log(`🔌 WebSocket connected: ${client.id}`);
 
-    // Gửi dữ liệu ngay, không bắt frontend đợi interval đầu tiên.
+    // Client mới nhận ngay snapshot gần nhất.
     if (this.cachedCoins.length > 0) {
       client.emit('price_updates', this.cachedCoins);
     }
   }
 
   handleDisconnect(client: Socket): void {
-    console.log(`❌ Client ngắt kết nối WebSocket: ${client.id}`);
+    console.log(`❌ WebSocket disconnected: ${client.id}`);
   }
 
   onModuleDestroy(): void {
-    this.priceUpdateSubscription?.unsubscribe();
-    this.retryLoadSubscription?.unsubscribe();
+    this.refreshSubscription?.unsubscribe();
   }
 
-  private async loadInitialCoins(): Promise<void> {
-    const coins = await this.cryptoService.getTopCoins();
+  private startMarketRefresh(): void {
+    this.refreshSubscription?.unsubscribe();
 
-    if (coins.length > 0) {
-      this.cachedCoins = coins;
-      console.log(`✅ Đã cache ${coins.length} coin từ CoinGecko`);
-    } else {
-      console.warn(
-        '⚠️ Chưa lấy được dữ liệu CoinGecko. Backend sẽ thử lại sau.',
-      );
-    }
-  }
-
-  private startRetryWhenCacheIsEmpty(): void {
-    this.retryLoadSubscription?.unsubscribe();
-
-    this.retryLoadSubscription = interval(60_000).subscribe(async () => {
-      if (this.cachedCoins.length > 0) {
-        return;
-      }
-
-      console.log('🔄 Đang thử tải lại dữ liệu CoinGecko...');
-      await this.loadInitialCoins();
+    this.refreshSubscription = interval(
+      this.refreshIntervalMs,
+    ).subscribe(() => {
+      void this.refreshMarketData();
     });
+
+    console.log(
+      `🔄 CoinGecko refresh interval: ${this.refreshIntervalMs}ms`,
+    );
   }
 
-  private startRealtimePriceUpdates(): void {
-    this.priceUpdateSubscription?.unsubscribe();
+  private async refreshMarketData(): Promise<void> {
+    // Tránh request chồng nhau nếu API phản hồi chậm.
+    if (this.isRefreshing) {
+      return;
+    }
 
-    this.priceUpdateSubscription = interval(3000).subscribe(() => {
-      if (this.cachedCoins.length === 0) {
+    this.isRefreshing = true;
+
+    try {
+      const freshCoins =
+        (await this.cryptoService.getTopCoins()) as CoinData[];
+
+      // Khi CoinGecko lỗi hoặc rate-limit, giữ cache cũ.
+      if (!Array.isArray(freshCoins) || freshCoins.length === 0) {
+        console.warn(
+          '⚠️ Không nhận được dữ liệu mới. Tiếp tục sử dụng cache hiện tại.',
+        );
         return;
       }
 
-      this.cachedCoins = this.cachedCoins.map((coin) => {
-        const oldPrice = Number(coin.price);
-        const oldChange24h = Number(coin.priceChange24h ?? 0);
+      const previousCoinsById = new Map(
+        this.cachedCoins.map((coin) => [coin.id, coin]),
+      );
 
-        if (!Number.isFinite(oldPrice)) {
-          return coin;
-        }
-
-        // Biến động ngẫu nhiên từ -0,5% đến +0,5%.
-        const randomChangePercent = (Math.random() - 0.5) * 1;
-
-        const newPrice =
-          oldPrice * (1 + randomChangePercent / 100);
+      this.cachedCoins = freshCoins.map((coin) => {
+        const previousCoin = previousCoinsById.get(coin.id);
 
         return {
           ...coin,
-
-          // Giữ đủ số thập phân cho các coin có giá rất nhỏ.
-          price: Number(newPrice.toFixed(8)),
-
-          priceChange24h: Number(
-            (oldChange24h + randomChangePercent).toFixed(2),
-          ),
-
-          isUp: newPrice >= oldPrice,
+          isUp: previousCoin
+            ? coin.price >= previousCoin.price
+            : undefined,
         };
       });
 
+      const bitcoin = freshCoins.find((coin) => coin.id === 'bitcoin');
+
+if (bitcoin) {
+  console.log('BTC snapshot:', {
+    price: bitcoin.price,
+    priceChange1h: bitcoin.priceChange1h,
+    priceChange24h: bitcoin.priceChange24h,
+    priceChange7d: bitcoin.priceChange7d,
+    lastUpdated: bitcoin.lastUpdated,
+    fetchedAt: new Date().toISOString(),
+  });
+}
+
       this.server.emit('price_updates', this.cachedCoins);
-    });
+
+      console.log(
+        `✅ Updated and emitted ${this.cachedCoins.length} real market records`,
+      );
+    } catch (error) {
+      console.error(
+        '❌ Không thể refresh dữ liệu thị trường:',
+        error instanceof Error ? error.message : error,
+      );
+    } finally {
+      this.isRefreshing = false;
+    }
   }
 }

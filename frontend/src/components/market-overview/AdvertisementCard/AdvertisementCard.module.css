@@ -1,0 +1,96 @@
+.card {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 96px;
+  padding: var(--cmc-space-4);
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cmc-space-4);
+  overflow: hidden;
+  border-radius: var(--cmc-radius-large);
+  background:
+    linear-gradient(
+      110deg,
+      #ffffff 0%,
+      #f4f7ff 58%,
+      #dfe8ff 100%
+    );
+  color: #171924;
+}
+
+.card::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  background-color: var(--cmc-brand-primary);
+  content: '';
+}
+
+.content {
+  min-width: 0;
+}
+
+.title {
+  display: flex;
+  margin: 0;
+  flex-direction: column;
+  color: #171924;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 20px;
+}
+
+.title strong {
+  color: #3861fb;
+}
+
+.description {
+  display: block;
+  margin-top: var(--cmc-space-1);
+  color: #646b80;
+  font-size: 10px;
+  line-height: 14px;
+}
+
+.button {
+  display: inline-flex;
+  min-width: 150px;
+  min-height: 44px;
+  padding: var(--cmc-space-2) var(--cmc-space-3);
+  align-items: center;
+  justify-content: center;
+  gap: var(--cmc-space-1);
+  border-radius: var(--cmc-radius-medium);
+  background-color: #3861fb;
+  color: #ffffff;
+  cursor: pointer;
+  flex-direction: column;
+  font-size: 11px;
+  line-height: 13px;
+}
+
+.button span:last-child {
+  position: absolute;
+  right: 12px;
+}
+
+.badge {
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  padding: 1px 6px;
+  border-radius: var(--cmc-radius-pill);
+  background-color: rgba(23, 25, 36, 0.42);
+  color: #ffffff;
+  font-size: 9px;
+  line-height: 14px;
+}
+
+@media (max-width: 767.98px) {
+  .card {
+    display: none;
+  }
+}

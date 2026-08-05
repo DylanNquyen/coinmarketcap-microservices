@@ -1,0 +1,246 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  padding: 24px;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(0 0 0 / 68%);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.modal {
+  position: relative;
+  width: min(100%, 440px);
+  max-height: calc(100vh - 48px);
+  padding: 28px;
+  overflow-y: auto;
+  border: 1px solid var(--cmc-border-primary);
+  border-radius: 16px;
+  background-color: var(--cmc-bg-elevated);
+  box-shadow: 0 24px 80px rgb(0 0 0 / 48%);
+  color: var(--cmc-text-primary);
+}
+
+.closeButton {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--cmc-text-secondary);
+  cursor: pointer;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.closeButton:hover {
+  background-color: var(--cmc-bg-hover);
+  color: var(--cmc-text-primary);
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid var(--cmc-brand-primary);
+  outline-offset: 2px;
+}
+
+.brand {
+  display: flex;
+  margin-bottom: 24px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.logoMark {
+  display: inline-flex;
+  width: 26px;
+  height: 26px;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  font-size: 13px;
+}
+
+.tabs {
+  display: grid;
+  margin-bottom: 24px;
+  padding: 4px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-radius: 10px;
+  background-color: var(--cmc-bg-primary);
+}
+
+.tabButton {
+  height: 38px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--cmc-text-secondary);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+}
+
+.activeTab {
+  background-color: var(--cmc-bg-hover);
+  color: var(--cmc-text-primary);
+}
+
+.title {
+  margin: 0;
+  font-size: 24px;
+  line-height: 32px;
+  text-align: center;
+}
+
+.description {
+  margin: 8px 0 24px;
+  color: var(--cmc-text-secondary);
+  font-size: 13px;
+  line-height: 20px;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  color: var(--cmc-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.input {
+  width: 100%;
+  height: 44px;
+  padding-inline: 14px;
+  border: 1px solid var(--cmc-border-secondary);
+  border-radius: 8px;
+  outline: none;
+  background-color: var(--cmc-bg-primary);
+  color: var(--cmc-text-primary);
+  font: inherit;
+  font-size: 14px;
+  transition:
+    border-color var(--cmc-transition-fast),
+    box-shadow var(--cmc-transition-fast);
+}
+
+.input::placeholder {
+  color: var(--cmc-text-secondary);
+}
+
+.input:focus {
+  border-color: var(--cmc-brand-primary);
+  box-shadow: 0 0 0 3px rgb(97 136 255 / 16%);
+}
+
+.input:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.errorMessage,
+.successMessage {
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.errorMessage {
+  border: 1px solid rgb(234 57 67 / 36%);
+  background-color: rgb(234 57 67 / 10%);
+  color: #ea3943;
+}
+
+.successMessage {
+  border: 1px solid rgb(22 199 132 / 36%);
+  background-color: rgb(22 199 132 / 10%);
+  color: #16c784;
+}
+
+.submitButton {
+  height: 44px;
+  border: 0;
+  border-radius: 8px;
+  background-color: var(--cmc-brand-primary);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  transition:
+    filter var(--cmc-transition-fast),
+    transform var(--cmc-transition-fast);
+}
+
+.submitButton:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.submitButton:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.submitButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.switchText {
+  margin: 20px 0 0;
+  color: var(--cmc-text-secondary);
+  font-size: 13px;
+  text-align: center;
+}
+
+.switchButton {
+  margin-left: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--cmc-brand-primary);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+}
+
+.switchButton:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 479.98px) {
+  .overlay {
+    padding: 12px;
+    align-items: flex-end;
+  }
+
+  .modal {
+    width: 100%;
+    max-height: calc(100vh - 24px);
+    padding: 24px 18px;
+    border-radius: 16px 16px 0 0;
+  }
+}

@@ -1,0 +1,16 @@
+.shell {
+  min-height: 100vh;
+  background-color: var(--cmc-bg-primary);
+  color: var(--cmc-text-primary);
+}
+
+.main {
+  min-height: 640px;
+}
+
+.shell {
+  padding-bottom: var(
+    --cmc-bottom-market-bar-height,
+    32px
+  );
+}

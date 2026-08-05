@@ -1,0 +1,80 @@
+.gauge {
+  position: relative;
+  width: 120px;
+  height: 72px;
+  margin-inline: auto;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.segment {
+  fill: none;
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+
+.extremeFear {
+  stroke: #ea3943;
+}
+
+.fear {
+  stroke: #f5b97f;
+}
+
+.neutral {
+  stroke: #f3d42f;
+}
+
+.greed {
+  stroke: #93d33d;
+}
+
+.extremeGreed {
+  stroke: var(--cmc-positive);
+}
+
+.indicatorOuter {
+  fill: var(--cmc-bg-elevated);
+  stroke: var(--cmc-text-primary);
+  stroke-width: 2;
+  transition:
+    cx var(--cmc-transition-normal),
+    cy var(--cmc-transition-normal);
+}
+
+.indicatorInner {
+  fill: var(--cmc-text-primary);
+  transition:
+    cx var(--cmc-transition-normal),
+    cy var(--cmc-transition-normal);
+}
+
+.content {
+  position: absolute;
+  top: 29px;
+  right: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.value {
+  color: var(--cmc-text-primary);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 20px;
+}
+
+.label {
+  margin-top: 1px;
+  color: var(--cmc-text-secondary);
+  font-size: 10px;
+  line-height: 12px;
+}

@@ -1,15 +1,22 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
 
 @Entity('watchlists')
+@Unique('UQ_watchlist_user_coin', ['userId', 'coinId'])
 export class Watchlist {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  userId: number; // ID của user sở hữu (lấy từ Token)
+  userId: number;
 
-  @Column()
-  coinId: string; // Ví dụ: 'bitcoin', 'ethereum'
+  @Column({ length: 100 })
+  coinId: string;
 
   @CreateDateColumn()
   createdAt: Date;

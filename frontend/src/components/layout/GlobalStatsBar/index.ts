@@ -1,0 +1,1 @@
+export { GlobalStatsBar } from './GlobalStatsBar';

@@ -1,0 +1,105 @@
+//DATA AUDIT
+const AUDIT_TARGETS = {
+    layout: {
+      pageWidth: '100%',
+      maxContainer: '1920px',
+      containerPadding: '16px',
+      bg: '#0D1421',
+      secondaryBg: '#171924'
+    },
+    colors: {
+      bg: '#0d1421',
+      surface: '#171924',
+      card: '#292d3f',
+      border: '#222531',
+      textPrimary: '#ffffff',
+      textSecondary: '#a1a7bb',
+      primaryBlue: '#6188ff',
+      positive: '#16c784',
+      negative: '#ea3943'
+    },
+    spacing: { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32, xxxl: 48 },
+    radius: { button: '8px', card: '8px', search: '8px', badge: '999px' },
+    shadow: '0 4px 24px rgba(88,102,126,.08), 0 1px 2px rgba(88,102,126,.12)',
+    breakpoints: [1400, 1280, 1024, 768, 640, 430],
+    componentSizes: {
+      headerHeight: '48px',
+      navigationHeight: '57px',
+      logo: '168x29',
+      searchIcon: '24x24'
+    }
+  };
+
+  
+  // src/theme/tokens.ts
+export const colors = {
+  bg: '#0D1421',
+  surface: '#171924',
+  card: '#292D3F',
+  border: '#222531',
+  borderHover: '#323546',
+  textPrimary: '#FFFFFF',
+  textSecondary: '#A1A7BB',
+  primaryBlue: '#6188FF',
+  positive: '#16C784',
+  negative: '#EA3943',
+};
+
+export const typography = {
+  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  navbar: { fontSize: '15px', fontWeight: 400, lineHeight: '22.5px' },
+  activeTab: { fontSize: '20px', fontWeight: 600, lineHeight: '30px' },
+  coinName: { fontSize: '14px', fontWeight: 600, lineHeight: '24px' },
+  button: { fontSize: '12px', fontWeight: 600, lineHeight: '18px' },
+  body: { fontSize: '15px', fontWeight: 400, lineHeight: '22.5px' },
+};
+
+export const spacing = {
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 24,
+  xxl: 32,
+  xxxl: 48,
+};
+
+export const radii = {
+  button: '8px',
+  card: '8px',
+  search: '8px',
+  badge: '999px',
+};
+
+export const shadows = {
+  main: '0 4px 24px rgba(88,102,126,.08), 0 1px 2px rgba(88,102,126,.12)',
+};
+
+export const breakpoints = {
+  desktopFull: '1400px',
+  desktopCompact: '1280px',
+  tabletLg: '1024px',
+  tabletSm: '768px',
+  mobileLg: '640px',
+  mobileSm: '430px',
+};
+
+export const sizes = {
+  headerHeight: '48px',
+  navigationHeight: '57px',
+  logoWidth: '168px',
+  logoHeight: '29px',
+  searchIcon: '24px',
+  containerMaxWidth: '1920px',
+  containerPadding: '16px',
+};
+
+export const theme = {
+  colors,
+  typography,
+  spacing,
+  radii,
+  shadows,
+  breakpoints,
+  sizes,
+};
