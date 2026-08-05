@@ -81,6 +81,9 @@
 }
 
 .utilityLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   color: var(--cmc-text-primary);
   font-size: 12px;
   font-weight: 500;
@@ -88,8 +91,20 @@
   white-space: nowrap;
 }
 
+.utilityIcon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  fill: var(--cmc-text-muted);
+  transition: fill var(--cmc-transition-fast);
+}
+
 .utilityLink:hover {
   color: var(--cmc-brand-primary);
+}
+
+.utilityLink:hover .utilityIcon {
+  fill: var(--cmc-brand-primary);
 }
 
 .searchButton {
@@ -196,36 +211,33 @@
 
 .accountButton {
   display: inline-flex;
-  height: 34px;
-  padding: 2px 8px 2px 3px;
+  height: 38px;
+  padding: 3px 10px 3px 3px;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   border: 1px solid var(--cmc-border-secondary);
   border-radius: 999px;
-  background-color: var(--cmc-bg-elevated);
+  background-color: transparent;
   color: var(--cmc-text-primary);
   cursor: pointer;
   font: inherit;
 }
 
 .accountButton:hover {
-  border-color: var(--cmc-border-interactive);
+  border-color: var(--cmc-brand-primary);
+  background-color: var(--cmc-bg-elevated);
 }
 
 .avatar {
   display: inline-flex;
-  width: 26px;
-  height: 26px;
+  width: 30px;
+  height: 30px;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background:
-    linear-gradient(
-      135deg,
-      var(--cmc-brand-primary),
-      #8247e5
-    );
+  background: linear-gradient(135deg, #7957eb, #5737d6);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 22%);
   color: #fff;
   font-size: 12px;
   font-weight: 700;
@@ -245,68 +257,13 @@
   font-size: 9px;
 }
 
-.accountMenu {
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  z-index: 500;
-  width: 220px;
-  padding: 8px;
-  border: 1px solid var(--cmc-border-primary);
-  border-radius: 10px;
-  background-color: var(--cmc-bg-elevated);
-  box-shadow: 0 16px 48px rgb(0 0 0 / 36%);
-}
-
-.accountInfo {
-  padding: 8px 10px 12px;
-}
-
-.accountEmail {
-  display: block;
-  overflow: hidden;
-  color: var(--cmc-text-secondary);
-  font-size: 12px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.accountMenuItem {
-  display: flex;
-  width: 100%;
-  min-height: 36px;
-  padding-inline: 10px;
-  align-items: center;
-  border: 0;
-  border-radius: 7px;
-  background: transparent;
-  color: var(--cmc-text-primary);
-  cursor: pointer;
-  font: inherit;
-  font-size: 13px;
-  text-align: left;
-}
-
-.accountMenuItem:hover {
-  background-color: var(--cmc-bg-hover);
-}
-
-.accountMenuDivider {
-  height: 1px;
-  margin: 6px 4px;
-  background-color: var(--cmc-border-primary);
-}
-
-.logoutButton {
-  color: #ea3943;
-}
-
 @media (max-width: 1279.98px) {
   .navigationList {
     gap: var(--cmc-space-3);
+  }
+
   .accountName {
-  display: none;
-}
+    display: none;
   }
 
   .navigationLink {
@@ -353,14 +310,14 @@
   }
 
   .loginButton {
-  padding-inline: 10px;
-}
+    padding-inline: 10px;
+  }
 
-.accountButton {
-  padding-right: 3px;
-}
+  .accountButton {
+    padding-right: 3px;
+  }
 
-.accountChevron {
-  display: none;
-}
+  .accountChevron {
+    display: none;
+  }
 }

@@ -1,0 +1,287 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  padding: 80px 24px 24px;
+  align-items: flex-start;
+  justify-content: center;
+  background-color: rgb(5 8 15 / 78%);
+  backdrop-filter: blur(1px);
+}
+
+.modal {
+  width: min(900px, 100%);
+  max-height: calc(100vh - 104px);
+  padding: 8px;
+  overflow-y: auto;
+  border: 1px solid var(--cmc-border-primary);
+  border-radius: var(--cmc-radius-large);
+  background-color: var(--cmc-bg-elevated);
+  box-shadow: 0 28px 90px rgb(0 0 0 / 52%);
+  color: var(--cmc-text-primary);
+}
+
+.searchHeader {
+  display: flex;
+  height: 48px;
+  padding-inline: 12px 6px;
+  align-items: center;
+  gap: 10px;
+}
+
+.searchIcon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: var(--cmc-text-muted);
+  stroke-linecap: round;
+  stroke-width: 1.5;
+}
+
+.searchInput {
+  min-width: 0;
+  height: 100%;
+  flex: 1;
+  background: transparent;
+  color: var(--cmc-text-primary);
+  font-size: 14px;
+}
+
+.searchInput::placeholder {
+  color: var(--cmc-text-muted);
+}
+
+.searchInput:focus-visible {
+  outline: none;
+}
+
+.closeButton {
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--cmc-text-muted);
+  cursor: pointer;
+}
+
+.closeButton:hover {
+  background-color: var(--cmc-bg-hover);
+  color: var(--cmc-text-primary);
+}
+
+.closeButton svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 1.5;
+}
+
+.divider {
+  height: 1px;
+  margin-inline: 4px;
+  background-color: var(--cmc-border-secondary);
+}
+
+.boostedSection,
+.resultsSection {
+  padding: 14px 0 0;
+}
+
+.sectionLabel {
+  margin: 0 0 8px;
+  padding-inline: 12px;
+  color: var(--cmc-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.boostedScroller {
+  display: grid;
+  padding-inline: 0;
+  grid-template-columns: repeat(5, minmax(150px, 1fr));
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.boostedScroller::-webkit-scrollbar {
+  display: none;
+}
+
+.boostedCard {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  height: 64px;
+  padding: 10px;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid transparent;
+  border-radius: var(--cmc-radius-medium);
+  background-color: #432918;
+}
+
+.boostedCardActive {
+  border-color: #ff6d43;
+}
+
+.boostedCard img,
+.coinLogo {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.boostedCard div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.boostedCard strong,
+.boostedCard div span {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.boostedCard div span {
+  color: var(--cmc-text-secondary);
+}
+
+.boostRank {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  color: #ff7358;
+  font-size: 11px;
+}
+
+.resultsSection {
+  padding-bottom: 0;
+}
+
+.resultsList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.resultItem {
+  display: grid;
+  min-height: 56px;
+  padding: 8px 12px;
+  grid-template-columns: 34px minmax(180px, 1.4fr) minmax(170px, 1fr) minmax(110px, auto);
+  align-items: center;
+  gap: 10px;
+  border-radius: var(--cmc-radius-medium);
+  background-color: var(--cmc-bg-card);
+  transition: background-color var(--cmc-transition-fast);
+}
+
+.resultItem:hover {
+  background-color: var(--cmc-bg-hover);
+}
+
+.coinIdentity,
+.marketStats,
+.priceStats {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.coinIdentity strong {
+  overflow: hidden;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.coinIdentity > span,
+.marketStats span {
+  color: var(--cmc-text-secondary);
+  font-size: 11px;
+}
+
+.rankBadge {
+  margin-left: 6px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  background-color: var(--cmc-bg-hover);
+  color: var(--cmc-text-secondary);
+  font-size: 9px;
+  font-weight: 400;
+}
+
+.priceStats {
+  align-items: flex-end;
+  font-size: 12px;
+}
+
+.priceStats span {
+  font-size: 11px;
+}
+
+.positive {
+  color: var(--cmc-positive);
+}
+
+.negative {
+  color: var(--cmc-negative);
+}
+
+.emptyState {
+  padding: 44px 16px;
+  color: var(--cmc-text-muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+@media (max-width: 767.98px) {
+  .overlay {
+    padding: 56px 12px 12px;
+  }
+
+  .modal {
+    max-height: calc(100vh - 68px);
+  }
+
+  .boostedScroller {
+    grid-template-columns: repeat(5, 160px);
+  }
+
+  .resultItem {
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+  }
+
+  .marketStats {
+    display: none;
+  }
+}
+
+@media (max-width: 479.98px) {
+  .overlay {
+    padding: 0;
+  }
+
+  .modal {
+    width: 100%;
+    max-height: 100vh;
+    min-height: 100vh;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .searchInput {
+    font-size: 13px;
+  }
+}

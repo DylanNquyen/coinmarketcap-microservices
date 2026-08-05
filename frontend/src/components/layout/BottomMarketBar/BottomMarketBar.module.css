@@ -21,7 +21,7 @@
   min-width: 0;
   flex: 1;
   overflow-x: auto;
-  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .scroller::-webkit-scrollbar {

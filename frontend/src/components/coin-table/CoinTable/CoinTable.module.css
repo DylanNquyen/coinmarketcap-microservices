@@ -4,7 +4,7 @@
 
 .tableContainer {
   width: 100%;
-  margin-top: var(--cmc-space-3);
+  margin-top: var(--cmc-space-2);
   overflow-x: auto;
   border-top: 1px solid var(--cmc-border-primary);
   scrollbar-width: thin;

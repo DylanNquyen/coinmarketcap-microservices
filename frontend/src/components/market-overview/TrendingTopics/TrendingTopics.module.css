@@ -81,6 +81,17 @@
   color: var(--cmc-text-primary);
 }
 
+.chevronIcon {
+  width: 14px;
+  height: 14px;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
 @media (max-width: 639.98px) {
   .navigationButton {
     display: none;

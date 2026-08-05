@@ -1,7 +1,6 @@
 import { useEffect, type PropsWithChildren } from 'react';
 
 import { AiCopilot } from '@/components/ai-copilot/AiCopilot';
-import { GlobalStatsBar } from '@/components/layout/GlobalStatsBar';
 import { MainHeader } from '@/components/layout/MainHeader';
 import { SecondaryNavigation } from '@/components/layout/SecondaryNavigation';
 import { useCryptoStore } from '@/store/useCryptoStore';
@@ -23,7 +22,6 @@ export function AppShell({ children }: AppShellProps) {
 
   return (
     <div className={styles.shell}>
-      <GlobalStatsBar />
       <MainHeader />
       <SecondaryNavigation />
 

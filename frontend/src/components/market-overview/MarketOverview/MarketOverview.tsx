@@ -67,7 +67,7 @@ export function MarketOverview() {
               />
 
               <MarketStatCard
-                title="Fear & Greed"
+                title="Fear & Greed Index"
                 footer={<FearGreedGauge value={34} label="Fear" />}
               />
             </div>

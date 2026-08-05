@@ -4,7 +4,9 @@ import {
   useState,
 } from 'react';
 
-import { AuthModal } from '@/components/auth-modal/AuthModal';
+import { AccountMenu } from '@/components/auth/AccountMenu';
+import { AuthModal } from '@/components/auth/AuthModal';
+import { SearchModal } from '@/components/search/SearchModal';
 import { useAuthStore } from '@/store/useAuthStore';
 
 import { primaryNavigation } from './navigation.data';
@@ -14,6 +16,8 @@ export function MainHeader() {
   const [authModalOpen, setAuthModalOpen] =
     useState(false);
   const [accountMenuOpen, setAccountMenuOpen] =
+    useState(false);
+  const [searchModalOpen, setSearchModalOpen] =
     useState(false);
 
   const accountMenuRef =
@@ -64,6 +68,30 @@ export function MainHeader() {
       );
     };
   }, [accountMenuOpen]);
+
+  useEffect(() => {
+    const handleSearchShortcut = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const isTyping =
+        target?.tagName === 'INPUT' ||
+        target?.tagName === 'TEXTAREA' ||
+        target?.isContentEditable;
+
+      if (event.key === '/' && !isTyping) {
+        event.preventDefault();
+        setSearchModalOpen(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleSearchShortcut);
+
+    return () => {
+      window.removeEventListener(
+        'keydown',
+        handleSearchShortcut,
+      );
+    };
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -120,20 +148,36 @@ export function MainHeader() {
               className={styles.utilityLink}
               href="#portfolio"
             >
-              Portfolio
+              <svg
+                className={styles.utilityIcon}
+                viewBox="0 0 16 16"
+                aria-hidden="true"
+              >
+                <path d="M8 1.5a6.5 6.5 0 1 0 6.5 6.5H8V1.5Z" />
+                <path d="M9.5 1.7a5 5 0 0 1 4.8 4.8H9.5V1.7Z" />
+              </svg>
+              <span>Portfolio</span>
             </a>
 
             <a
               className={styles.utilityLink}
               href="#watchlist"
             >
-              Watchlist
+              <svg
+                className={styles.utilityIcon}
+                viewBox="0 0 16 16"
+                aria-hidden="true"
+              >
+                <path d="m8 1.4 2 4.05 4.47.65-3.24 3.15.77 4.45L8 11.6l-4 2.1.77-4.45L1.53 6.1 6 5.45 8 1.4Z" />
+              </svg>
+              <span>Watchlist</span>
             </a>
 
             <button
               className={styles.searchButton}
               type="button"
               aria-label="Search cryptocurrencies"
+              onClick={() => setSearchModalOpen(true)}
             >
               <span
                 className={styles.searchIcon}
@@ -197,53 +241,11 @@ export function MainHeader() {
                 </button>
 
                 {accountMenuOpen && (
-                  <div
-                    className={styles.accountMenu}
-                    role="menu"
-                  >
-                    <div className={styles.accountInfo}>
-                      <span
-                        className={styles.accountEmail}
-                      >
-                        {user?.email}
-                      </span>
-                    </div>
-
-                    <a
-                      className={styles.accountMenuItem}
-                      href="#portfolio"
-                      role="menuitem"
-                      onClick={() =>
-                        setAccountMenuOpen(false)
-                      }
-                    >
-                      Portfolio
-                    </a>
-
-                    <a
-                      className={styles.accountMenuItem}
-                      href="#watchlist"
-                      role="menuitem"
-                      onClick={() =>
-                        setAccountMenuOpen(false)
-                      }
-                    >
-                      Watchlist
-                    </a>
-
-                    <div
-                      className={styles.accountMenuDivider}
-                    />
-
-                    <button
-                      className={`${styles.accountMenuItem} ${styles.logoutButton}`}
-                      type="button"
-                      role="menuitem"
-                      onClick={handleLogout}
-                    >
-                      Log Out
-                    </button>
-                  </div>
+                  <AccountMenu
+                    email={user?.email ?? ''}
+                    displayName={displayName}
+                    onLogout={handleLogout}
+                  />
                 )}
               </div>
             )}
@@ -252,6 +254,7 @@ export function MainHeader() {
               className={styles.mobileSearchButton}
               type="button"
               aria-label="Search cryptocurrencies"
+              onClick={() => setSearchModalOpen(true)}
             >
               ⌕
             </button>
@@ -273,6 +276,12 @@ export function MainHeader() {
         open={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
       />
+
+      {searchModalOpen && (
+        <SearchModal
+          onClose={() => setSearchModalOpen(false)}
+        />
+      )}
     </>
   );
 }
