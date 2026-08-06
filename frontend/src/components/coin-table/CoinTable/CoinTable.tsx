@@ -1,9 +1,16 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { MiniSparkline } from '@/components/market-overview/MiniSparkline';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useCryptoStore, type Coin } from '@/store/useCryptoStore';
+import {
+  useTableColumnsStore,
+  type OptionalCoinColumn,
+} from '@/store/useTableColumnsStore';
+import { useTableFiltersStore } from '@/store/useTableFiltersStore';
+import { usePreferencesStore } from '@/store/usePreferencesStore';
+import { useNetworkFilterStore } from '@/store/useNetworkFilterStore';
 
 import { PercentageCell } from '../PercentageCell';
 import { PriceCell } from '../PriceCell';
@@ -14,9 +21,20 @@ import {
 
 import styles from './CoinTable.module.css';
 
-const TABLE_COLUMN_COUNT = 11;
+const FIXED_COLUMN_COUNT = 4;
+
+const optionalColumnWidths: Record<OptionalCoinColumn, number> = {
+  priceChange1h: 100,
+  priceChange24h: 100,
+  priceChange7d: 100,
+  marketCap: 160,
+  volume24h: 160,
+  circulatingSupply: 190,
+  sparkline7d: 180,
+};
 
 function CoinIdentityCell({ coin }: { coin: Coin }) {
+  const language = usePreferencesStore((state) => state.language);
   return (
     <div className={styles.coinIdentity}>
       <img
@@ -40,7 +58,7 @@ function CoinIdentityCell({ coin }: { coin: Coin }) {
         type="button"
         aria-label={`Buy ${coin.name}`}
       >
-        Buy
+        {language === 'vi' ? 'Mua' : 'Buy'}
       </button>
     </div>
   );
@@ -51,6 +69,9 @@ type CoinTableProps = {
 };
 
 export function CoinTable({ coins: providedCoins }: CoinTableProps) {
+  const currency = usePreferencesStore((state) => state.currency);
+  const language = usePreferencesStore((state) => state.language);
+  const vi = language === 'vi';
   const isAuthenticated = useAuthStore(
     (state) => state.isAuthenticated,
   );
@@ -58,6 +79,81 @@ export function CoinTable({ coins: providedCoins }: CoinTableProps) {
   const storeCoins = useCryptoStore((state) => state.coins);
   const displayedCoins = providedCoins ?? storeCoins;
   const loading = useCryptoStore((state) => state.loading);
+  const filters = useTableFiltersStore((state) => state.filters);
+  const activeNetwork = useNetworkFilterStore(
+    (state) => state.activeNetwork,
+  );
+  const filteredCoins = useMemo(
+    () =>
+      displayedCoins
+        .filter((coin) => {
+          if (
+            activeNetwork !== 'all' &&
+            !coin.networks?.includes(activeNetwork)
+          ) {
+            return false;
+          }
+
+          if (
+            filters.marketCapMin !== null &&
+            coin.marketCap < filters.marketCapMin
+          ) {
+            return false;
+          }
+
+          if (
+            filters.marketCapMax !== null &&
+            coin.marketCap > filters.marketCapMax
+          ) {
+            return false;
+          }
+
+          if (
+            filters.priceChange24hMin !== null &&
+            coin.priceChange24h < filters.priceChange24hMin
+          ) {
+            return false;
+          }
+
+          if (
+            filters.priceChange24hMax !== null &&
+            coin.priceChange24h > filters.priceChange24hMax
+          ) {
+            return false;
+          }
+
+          if (
+            filters.volume24hMin !== null &&
+            coin.volume24h < filters.volume24hMin
+          ) {
+            return false;
+          }
+
+          if (
+            filters.volume24hMax !== null &&
+            coin.volume24h > filters.volume24hMax
+          ) {
+            return false;
+          }
+
+          return true;
+        })
+        .slice(0, filters.visibleLimit),
+    [activeNetwork, displayedCoins, filters],
+  );
+  const visibleColumns = useTableColumnsStore(
+    (state) => state.visibleColumns,
+  );
+  const isColumnVisible = (column: OptionalCoinColumn) =>
+    visibleColumns.includes(column);
+  const tableColumnCount =
+    FIXED_COLUMN_COUNT + visibleColumns.length;
+  const tableMinWidth =
+    536 +
+    visibleColumns.reduce(
+      (total, column) => total + optionalColumnWidths[column],
+      0,
+    );
 
   const watchlistCoinIds = useCryptoStore(
     (state) => state.watchlistCoinIds,
@@ -96,11 +192,14 @@ export function CoinTable({ coins: providedCoins }: CoinTableProps) {
     >
       <PageContainer>
         <h2 id="coin-table-heading" className={styles.srOnly}>
-          Cryptocurrency market table
+          {vi ? 'Bảng thị trường tiền mã hóa' : 'Cryptocurrency market table'}
         </h2>
 
         <div className={styles.tableContainer}>
-          <table className={styles.table}>
+          <table
+            className={styles.table}
+            style={{ minWidth: `${tableMinWidth}px` }}
+          >
             <thead className={styles.tableHead}>
               <tr>
                 <th
@@ -120,72 +219,88 @@ export function CoinTable({ coins: providedCoins }: CoinTableProps) {
                   className={`${styles.headerCell} ${styles.nameColumn}`}
                   scope="col"
                 >
-                  Name
+                  {vi ? 'Tên' : 'Name'}
                 </th>
 
                 <th
                   className={`${styles.headerCell} ${styles.priceColumn}`}
                   scope="col"
                 >
-                  Price
+                  {vi ? 'Giá' : 'Price'}
                 </th>
 
-                <th
-                  className={`${styles.headerCell} ${styles.percentageColumn}`}
-                  scope="col"
-                >
-                  1h %
-                </th>
+                {isColumnVisible('priceChange1h') && (
+                  <th
+                    className={`${styles.headerCell} ${styles.percentageColumn}`}
+                    scope="col"
+                  >
+                    1h %
+                  </th>
+                )}
 
-                <th
-                  className={`${styles.headerCell} ${styles.percentageColumn}`}
-                  scope="col"
-                >
-                  24h %
-                </th>
+                {isColumnVisible('priceChange24h') && (
+                  <th
+                    className={`${styles.headerCell} ${styles.percentageColumn}`}
+                    scope="col"
+                  >
+                    24h %
+                  </th>
+                )}
 
-                <th
-                  className={`${styles.headerCell} ${styles.percentageColumn}`}
-                  scope="col"
-                >
-                  7d %
-                </th>
+                {isColumnVisible('priceChange7d') && (
+                  <th
+                    className={`${styles.headerCell} ${styles.percentageColumn}`}
+                    scope="col"
+                  >
+                    7d %
+                  </th>
+                )}
 
-                <th
-                  className={`${styles.headerCell} ${styles.marketCapColumn}`}
-                  scope="col"
-                >
-                  Market Cap
-                </th>
+                {isColumnVisible('marketCap') && (
+                  <th
+                    className={`${styles.headerCell} ${styles.marketCapColumn}`}
+                    scope="col"
+                  >
+                    {vi ? 'Vốn hóa thị trường' : 'Market Cap'}
+                  </th>
+                )}
 
-                <th
-                  className={`${styles.headerCell} ${styles.volumeColumn}`}
-                  scope="col"
-                >
-                  Volume (24h)
-                </th>
+                {isColumnVisible('volume24h') && (
+                  <th
+                    className={`${styles.headerCell} ${styles.volumeColumn}`}
+                    scope="col"
+                  >
+                    {vi ? 'Khối lượng (24 giờ)' : 'Volume (24h)'}
+                  </th>
+                )}
 
-                <th
-                  className={`${styles.headerCell} ${styles.supplyColumn}`}
-                  scope="col"
-                >
-                  Circulating Supply
-                </th>
+                {isColumnVisible('circulatingSupply') && (
+                  <th
+                    className={`${styles.headerCell} ${styles.supplyColumn}`}
+                    scope="col"
+                  >
+                    {vi ? 'Cung lưu hành' : 'Circulating Supply'}
+                  </th>
+                )}
 
-                <th
-                  className={`${styles.headerCell} ${styles.sparklineColumn}`}
-                  scope="col"
-                >
-                  Last 7 Days
-                </th>
+                {isColumnVisible('sparkline7d') && (
+                  <th
+                    className={`${styles.headerCell} ${styles.sparklineColumn}`}
+                    scope="col"
+                  >
+                    {vi ? 'Giá 7 ngày %' : '7d Price%'}
+                  </th>
+                )}
               </tr>
             </thead>
 
             <tbody>
-              {loading && displayedCoins.length === 0 ? (
-                <CoinTableLoadingRows />
+              {loading && filteredCoins.length === 0 ? (
+                <CoinTableLoadingRows
+                  columnCount={tableColumnCount}
+                />
               ) : (
-                displayedCoins.map((coin) => {
+                filteredCoins.map((coin) => {
                   const isWatchlisted =
                     watchlistCoinIds.has(coin.id);
                   const isPending =
@@ -260,48 +375,61 @@ export function CoinTable({ coins: providedCoins }: CoinTableProps) {
                         />
                       </td>
 
-                      <td
-                        className={`${styles.cell} ${styles.percentageColumn}`}
-                      >
-                        <PercentageCell value={coin.priceChange1h} />
-                      </td>
+                      {isColumnVisible('priceChange1h') && (
+                        <td
+                          className={`${styles.cell} ${styles.percentageColumn}`}
+                        >
+                          <PercentageCell value={coin.priceChange1h} />
+                        </td>
+                      )}
 
-                      <td
-                        className={`${styles.cell} ${styles.percentageColumn}`}
-                      >
-                        <PercentageCell value={coin.priceChange24h} />
-                      </td>
+                      {isColumnVisible('priceChange24h') && (
+                        <td
+                          className={`${styles.cell} ${styles.percentageColumn}`}
+                        >
+                          <PercentageCell value={coin.priceChange24h} />
+                        </td>
+                      )}
 
-                      <td
-                        className={`${styles.cell} ${styles.percentageColumn}`}
-                      >
-                        <PercentageCell value={coin.priceChange7d} />
-                      </td>
+                      {isColumnVisible('priceChange7d') && (
+                        <td
+                          className={`${styles.cell} ${styles.percentageColumn}`}
+                        >
+                          <PercentageCell value={coin.priceChange7d} />
+                        </td>
+                      )}
 
-                      <td
-                        className={`${styles.cell} ${styles.marketCapColumn}`}
-                      >
-                        {formatCompactCurrency(coin.marketCap)}
-                      </td>
+                      {isColumnVisible('marketCap') && (
+                        <td
+                          className={`${styles.cell} ${styles.marketCapColumn}`}
+                        >
+                          {formatCompactCurrency(coin.marketCap, currency)}
+                        </td>
+                      )}
 
-                      <td
-                        className={`${styles.cell} ${styles.volumeColumn}`}
-                      >
-                        {formatCompactCurrency(coin.volume24h)}
-                      </td>
+                      {isColumnVisible('volume24h') && (
+                        <td
+                          className={`${styles.cell} ${styles.volumeColumn}`}
+                        >
+                          {formatCompactCurrency(coin.volume24h, currency)}
+                        </td>
+                      )}
 
-                      <td
-                        className={`${styles.cell} ${styles.supplyColumn}`}
-                      >
-                        {formatSupply(
-                          coin.circulatingSupply,
-                          coin.symbol,
-                        )}
-                      </td>
+                      {isColumnVisible('circulatingSupply') && (
+                        <td
+                          className={`${styles.cell} ${styles.supplyColumn}`}
+                        >
+                          {formatSupply(
+                            coin.circulatingSupply,
+                            coin.symbol,
+                          )}
+                        </td>
+                      )}
 
-                      <td
-                        className={`${styles.cell} ${styles.sparklineColumn}`}
-                      >
+                      {isColumnVisible('sparkline7d') && (
+                        <td
+                          className={`${styles.cell} ${styles.sparklineColumn}`}
+                        >
                         {coin.sparkline7d.length > 1 ? (
                           <div
                             className={[
@@ -327,17 +455,18 @@ export function CoinTable({ coins: providedCoins }: CoinTableProps) {
                             —
                           </span>
                         )}
-                      </td>
+                        </td>
+                      )}
                     </tr>
                   );
                 })
               )}
 
-              {!loading && displayedCoins.length === 0 && (
+              {!loading && filteredCoins.length === 0 && (
                 <tr>
                   <td
                     className={styles.emptyCell}
-                    colSpan={TABLE_COLUMN_COUNT}
+                    colSpan={tableColumnCount}
                   >
                     Không có dữ liệu coin.
                   </td>
@@ -351,7 +480,11 @@ export function CoinTable({ coins: providedCoins }: CoinTableProps) {
   );
 }
 
-function CoinTableLoadingRows() {
+function CoinTableLoadingRows({
+  columnCount,
+}: {
+  columnCount: number;
+}) {
   return (
     <>
       {Array.from({ length: 8 }, (_, rowIndex) => (
@@ -360,7 +493,7 @@ function CoinTableLoadingRows() {
           className={styles.tableRow}
         >
           {Array.from(
-            { length: TABLE_COLUMN_COUNT },
+            { length: columnCount },
             (_, cellIndex) => (
               <td key={cellIndex} className={styles.cell}>
                 <span className={styles.skeleton} />

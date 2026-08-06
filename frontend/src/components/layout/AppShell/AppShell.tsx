@@ -4,6 +4,7 @@ import { AiCopilot } from '@/components/ai-copilot/AiCopilot';
 import { MainHeader } from '@/components/layout/MainHeader';
 import { SecondaryNavigation } from '@/components/layout/SecondaryNavigation';
 import { useCryptoStore } from '@/store/useCryptoStore';
+import { usePreferencesStore } from '@/store/usePreferencesStore';
 
 import { SiteFooter } from '../SiteFooter';
 import { BottomMarketBar } from '@/components/layout/BottomMarketBar';
@@ -15,6 +16,11 @@ export function AppShell({ children }: AppShellProps) {
   const initialize = useCryptoStore(
     (state) => state.initialize,
   );
+  const initializePreferences = usePreferencesStore(
+    (state) => state.initialize,
+  );
+
+  useEffect(() => initializePreferences(), [initializePreferences]);
 
   useEffect(() => {
     void initialize();

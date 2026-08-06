@@ -11,6 +11,7 @@ import {
 
 import { CryptoService } from './crypto.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { MarketOverviewService } from './market-overview.service';
 
 type AuthenticatedRequest = {
   user: {
@@ -22,11 +23,17 @@ type AuthenticatedRequest = {
 export class CryptoController {
   constructor(
     private readonly cryptoService: CryptoService,
+    private readonly marketOverviewService: MarketOverviewService,
   ) {}
 
   @Get()
   getCoins() {
     return this.cryptoService.getTopCoins();
+  }
+
+  @Get('market-overview')
+  getMarketOverview() {
+    return this.marketOverviewService.getMarketOverview();
   }
 
   @UseGuards(JwtAuthGuard)
@@ -35,20 +42,13 @@ export class CryptoController {
     @Req() request: AuthenticatedRequest,
     @Body() body: { coinId: string },
   ) {
-    return this.cryptoService.addToWatchlist(
-      request.user.sub,
-      body.coinId,
-    );
+    return this.cryptoService.addToWatchlist(request.user.sub, body.coinId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('watchlist')
-  getWatchlist(
-    @Req() request: AuthenticatedRequest,
-  ) {
-    return this.cryptoService.getUserWatchlist(
-      request.user.sub,
-    );
+  getWatchlist(@Req() request: AuthenticatedRequest) {
+    return this.cryptoService.getUserWatchlist(request.user.sub);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -57,9 +57,6 @@ export class CryptoController {
     @Req() request: AuthenticatedRequest,
     @Param('coinId') coinId: string,
   ) {
-    return this.cryptoService.removeFromWatchlist(
-      request.user.sub,
-      coinId,
-    );
+    return this.cryptoService.removeFromWatchlist(request.user.sub, coinId);
   }
 }

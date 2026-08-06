@@ -119,6 +119,14 @@
   text-align: left;
 }
 
+button.menuRow {
+  cursor: pointer;
+}
+
+button.menuRow:hover {
+  color: var(--cmc-brand-primary);
+}
+
 .menuLink {
   padding-inline: 8px;
   cursor: pointer;
@@ -157,7 +165,7 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.segmentedControl span,
+.segmentedControl button,
 .assistantToggle span {
   display: inline-flex;
   height: 26px;
@@ -165,11 +173,12 @@
   justify-content: center;
   border-radius: 7px;
   font-size: 11px;
+  cursor: pointer;
 }
 
 .segmentedControl .activeSegment,
 .assistantToggle .activeToggle {
-  background-color: #181b27;
+  background-color: var(--cmc-bg-primary);
   box-shadow: 0 1px 3px rgb(0 0 0 / 24%);
   color: var(--cmc-text-primary);
 }

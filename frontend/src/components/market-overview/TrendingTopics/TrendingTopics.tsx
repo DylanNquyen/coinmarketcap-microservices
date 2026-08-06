@@ -1,5 +1,8 @@
 import { useRef } from 'react';
 
+import { askAiCopilot } from '@/components/ai-copilot/aiCopilot.events';
+import { usePreferencesStore } from '@/store/usePreferencesStore';
+
 import { trendingTopics } from './trendingTopics.data';
 import styles from './TrendingTopics.module.css';
 
@@ -26,6 +29,7 @@ function ChevronIcon({ direction }: ChevronIconProps) {
 }
 
 export function TrendingTopics() {
+  const language = usePreferencesStore((state) => state.language);
   const scrollerRef = useRef<HTMLDivElement>(null);
 
   const scrollTopics = (direction: 'left' | 'right') => {
@@ -64,12 +68,17 @@ export function TrendingTopics() {
         <ul className={styles.list}>
           {trendingTopics.map((topic) => (
             <li key={topic.label}>
-              <button className={styles.chip} type="button">
+              <button
+                className={styles.chip}
+                type="button"
+                onClick={() => askAiCopilot(language === 'vi' ? topic.labelVi : topic.label)}
+                aria-label={`Ask AI Copilot: ${language === 'vi' ? topic.labelVi : topic.label}`}
+              >
                 <span className={styles.icon} aria-hidden="true">
                   {topic.icon}
                 </span>
 
-                <span>{topic.label}</span>
+                <span>{language === 'vi' ? topic.labelVi : topic.label}</span>
               </button>
             </li>
           ))}

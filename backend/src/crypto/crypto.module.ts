@@ -5,11 +5,12 @@ import { CryptoController } from './crypto.controller';
 import { CryptoService } from './crypto.service';
 import { CryptoGateway } from './crypto.gateway';
 import { Watchlist } from './watchlist.entity';
+import { MarketOverviewService } from './market-overview.service';
 
 @Module({
   imports: [HttpModule, TypeOrmModule.forFeature([Watchlist])],
   controllers: [CryptoController],
-  providers: [CryptoService, CryptoGateway],
-  exports: [CryptoService], 
+  providers: [CryptoService, CryptoGateway, MarketOverviewService],
+  exports: [CryptoService],
 })
 export class CryptoModule {}

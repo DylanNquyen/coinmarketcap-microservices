@@ -26,6 +26,7 @@ interface CoinData {
   circulatingSupply: number;
   sparkline7d: number[];
   lastUpdated: string | null;
+  networks: string[];
   isUp?: boolean;
 }
 

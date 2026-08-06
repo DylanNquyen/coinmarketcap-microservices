@@ -282,8 +282,12 @@
 
 // export default AiCopilot;
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import {
+  AI_COPILOT_ASK_EVENT,
+  type AiCopilotAskEventDetail,
+} from './aiCopilot.events';
 import styles from './AiCopilot.module.css';
 
 interface Message {
@@ -467,7 +471,7 @@ export const AiCopilot: React.FC = () => {
     localStorage.removeItem(STORAGE_KEY);
   };
 
-  const handleSend = async (overridePrompt?: string) => {
+  const handleSend = useCallback(async (overridePrompt?: string) => {
     const userMsg = (overridePrompt || input).trim();
     if (!userMsg || loading) return;
 
@@ -512,7 +516,28 @@ export const AiCopilot: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [input, loading]);
+
+  useEffect(() => {
+    const handleAskRequest = (event: Event) => {
+      const { prompt } = (event as CustomEvent<AiCopilotAskEventDetail>)
+        .detail;
+
+      if (!prompt?.trim() || loading) {
+        return;
+      }
+
+      setVisible(true);
+      setInput(prompt);
+      void handleSend(prompt);
+    };
+
+    window.addEventListener(AI_COPILOT_ASK_EVENT, handleAskRequest);
+
+    return () => {
+      window.removeEventListener(AI_COPILOT_ASK_EVENT, handleAskRequest);
+    };
+  }, [handleSend, loading]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {

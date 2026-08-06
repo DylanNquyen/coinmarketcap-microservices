@@ -9,6 +9,7 @@ import {
   secondaryNavigationItems,
 } from './secondaryNavigation.data';
 import styles from './SecondaryNavigation.module.css';
+import { usePreferencesStore } from '@/store/usePreferencesStore';
 
 function getActiveHash() {
   const hash = window.location.hash;
@@ -21,6 +22,16 @@ function getActiveHash() {
 }
 
 export function SecondaryNavigation() {
+  const language = usePreferencesStore((state) => state.language);
+  const vi = language === 'vi';
+  const translations: Record<string, string> = {
+    Top: 'Hàng đầu', Trending: 'Xu hướng', Watchlist: 'Theo dõi',
+    Stocks: 'Cổ phiếu', 'Prediction Markets': 'Thị trường dự đoán',
+    'Most Visited': 'Xem nhiều nhất', New: 'Mới', Gainers: 'Tăng giá',
+    'More Categories': 'Thêm danh mục', 'Token unlocks': 'Mở khóa token',
+    Gaming: 'Trò chơi', Yield: 'Lợi suất',
+  };
+  const translate = (label: string) => (vi ? translations[label] ?? label : label);
   const [currentHash, setCurrentHash] =
     useState(getActiveHash);
   const [moreOpen, setMoreOpen] = useState(false);
@@ -100,7 +111,7 @@ export function SecondaryNavigation() {
                       isActive ? 'page' : undefined
                     }
                   >
-                    {item.label}
+                    {translate(item.label)}
                   </a>
                 </li>
               );
@@ -120,7 +131,7 @@ export function SecondaryNavigation() {
               setMoreOpen((current) => !current)
             }
           >
-            <span>More</span>
+            <span>{vi ? 'Thêm' : 'More'}</span>
             <span
               className={`${styles.dropdownIcon} ${
                 moreOpen ? styles.dropdownIconOpen : ''
@@ -157,7 +168,7 @@ export function SecondaryNavigation() {
                       {item.icon}
                     </span>
                   )}
-                  <span>{item.label}</span>
+                  <span>{translate(item.label)}</span>
                 </a>
               ))}
             </div>

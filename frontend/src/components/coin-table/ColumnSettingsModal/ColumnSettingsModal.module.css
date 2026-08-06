@@ -1,0 +1,259 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  display: flex;
+  padding: 62px 24px 24px;
+  align-items: flex-start;
+  justify-content: center;
+  background-color: rgb(5 8 15 / 78%);
+}
+
+.modal {
+  width: min(800px, 100%);
+  max-height: calc(100vh - 86px);
+  padding: 28px 32px 24px;
+  overflow-y: auto;
+  border: 1px solid var(--cmc-border-primary);
+  border-radius: 16px;
+  background-color: var(--cmc-bg-elevated);
+  box-shadow: 0 28px 90px rgb(0 0 0 / 52%);
+  color: var(--cmc-text-primary);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.title span {
+  margin-inline: 4px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background-color: var(--cmc-bg-hover);
+}
+
+.description {
+  margin-top: 6px;
+  color: var(--cmc-text-secondary);
+  font-size: 13px;
+}
+
+.closeButton {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--cmc-text-muted);
+  cursor: pointer;
+}
+
+.closeButton:hover {
+  background-color: var(--cmc-bg-hover);
+  color: var(--cmc-text-primary);
+}
+
+.closeButton svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 1.5;
+}
+
+.toolbar {
+  display: flex;
+  margin-top: 24px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.preset,
+.restartButton {
+  display: inline-flex;
+  height: 40px;
+  padding-inline: 16px;
+  align-items: center;
+  border-radius: var(--cmc-radius-medium);
+  background-color: var(--cmc-bg-card);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.preset {
+  min-width: 140px;
+}
+
+.restartButton {
+  gap: 6px;
+  color: var(--cmc-text-primary);
+  cursor: pointer;
+}
+
+.restartButton:hover {
+  background-color: var(--cmc-bg-hover);
+}
+
+.restartButton span {
+  font-size: 18px;
+}
+
+.selectedColumns {
+  display: flex;
+  min-height: 78px;
+  margin-top: 16px;
+  padding: 10px;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  align-items: center;
+  gap: 7px;
+  border-radius: var(--cmc-radius-medium);
+  background-color: var(--cmc-bg-card);
+}
+
+.selectedChip,
+.optionChip {
+  display: inline-flex;
+  height: 30px;
+  padding-inline: 10px;
+  align-items: center;
+  gap: 5px;
+  border-radius: var(--cmc-radius-pill);
+  background-color: #181b27;
+  color: var(--cmc-text-primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.selectedChip:hover,
+.optionChip:hover {
+  background-color: var(--cmc-bg-hover);
+}
+
+.orderBadge {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--cmc-bg-hover);
+  font-size: 10px;
+}
+
+.noSelection {
+  color: var(--cmc-text-muted);
+  font-size: 12px;
+}
+
+.options {
+  display: flex;
+  margin-top: 22px;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.optionRow {
+  display: grid;
+  min-height: 38px;
+  grid-template-columns: 170px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+}
+
+.groupLabel {
+  color: var(--cmc-text-secondary);
+  font-size: 12px;
+}
+
+.optionChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.optionChip {
+  height: 32px;
+  background-color: var(--cmc-bg-card);
+  color: var(--cmc-text-primary);
+}
+
+.optionChipSelected {
+  background-color: rgb(56 97 251 / 18%);
+  color: var(--cmc-brand-primary);
+}
+
+.footer {
+  display: flex;
+  margin-top: 24px;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cancelButton,
+.applyButton {
+  height: 40px;
+  padding-inline: 18px;
+  border-radius: var(--cmc-radius-medium);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.cancelButton {
+  color: var(--cmc-text-primary);
+}
+
+.cancelButton:hover {
+  background-color: var(--cmc-bg-hover);
+}
+
+.applyButton {
+  background-color: var(--cmc-brand-primary-hover);
+  color: #fff;
+}
+
+.applyButton:hover {
+  filter: brightness(1.08);
+}
+
+@media (max-width: 639.98px) {
+  .overlay {
+    padding: 0;
+  }
+
+  .modal {
+    width: 100%;
+    max-height: 100vh;
+    min-height: 100vh;
+    padding: 20px 16px;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .optionRow {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .preset {
+    min-width: 110px;
+  }
+}

@@ -1,4 +1,8 @@
 import styles from './AccountMenu.module.css';
+import {
+  usePreferencesStore,
+  type AppTheme,
+} from '@/store/usePreferencesStore';
 
 type AccountMenuProps = {
   email: string;
@@ -10,15 +14,17 @@ type MenuRowProps = {
   label: string;
   value?: string;
   accent?: boolean;
+  onClick?: () => void;
 };
 
 function MenuRow({
   label,
   value,
   accent = false,
+  onClick,
 }: MenuRowProps) {
-  return (
-    <div className={styles.menuRow} role="menuitem">
+  const content = (
+    <>
       <span>{label}</span>
 
       {value && (
@@ -30,7 +36,15 @@ function MenuRow({
           {value}
         </span>
       )}
-    </div>
+    </>
+  );
+
+  return onClick ? (
+    <button className={styles.menuRow} type="button" role="menuitem" onClick={onClick}>
+      {content}
+    </button>
+  ) : (
+    <div className={styles.menuRow} role="menuitem">{content}</div>
   );
 }
 
@@ -41,6 +55,19 @@ export function AccountMenu({
 }: AccountMenuProps) {
   const avatarInitial =
     displayName.charAt(0).toUpperCase() || 'U';
+  const language = usePreferencesStore((state) => state.language);
+  const currency = usePreferencesStore((state) => state.currency);
+  const theme = usePreferencesStore((state) => state.theme);
+  const setLanguage = usePreferencesStore((state) => state.setLanguage);
+  const setCurrency = usePreferencesStore((state) => state.setCurrency);
+  const setTheme = usePreferencesStore((state) => state.setTheme);
+  const isVietnamese = language === 'vi';
+
+  const themeOptions: Array<{ value: AppTheme; label: string }> = [
+    { value: 'light', label: isVietnamese ? 'Sáng' : 'Light' },
+    { value: 'dark', label: isVietnamese ? 'Tối' : 'Dark' },
+    { value: 'system', label: isVietnamese ? 'Hệ thống' : 'System' },
+  ];
 
   return (
     <div className={styles.menu} role="menu">
@@ -77,22 +104,39 @@ export function AccountMenu({
 
       <div className={styles.divider} />
 
-      <MenuRow label="API Dashboard" />
+      <MenuRow label={isVietnamese ? 'Bảng điều khiển API' : 'API Dashboard'} />
 
       <div className={styles.divider} />
 
-      <MenuRow label="Language" value="English  ›" />
-      <MenuRow label="Currency" value="$  USD  ›" accent />
+      <MenuRow
+        label={isVietnamese ? 'Ngôn ngữ' : 'Language'}
+        value={`${isVietnamese ? 'Tiếng Việt' : 'English'}  ›`}
+        onClick={() => setLanguage(isVietnamese ? 'en' : 'vi')}
+      />
+      <MenuRow
+        label={isVietnamese ? 'Tiền tệ' : 'Currency'}
+        value={`${currency === 'USD' ? '$' : '₫'}  ${currency}  ›`}
+        accent
+        onClick={() => setCurrency(currency === 'USD' ? 'VND' : 'USD')}
+      />
 
       <div className={styles.menuRow} role="menuitem">
-        <span>Theme</span>
+        <span>{isVietnamese ? 'Giao diện' : 'Theme'}</span>
         <div
           className={styles.segmentedControl}
-          aria-label="Theme preview"
+          aria-label={isVietnamese ? 'Chọn giao diện' : 'Choose theme'}
         >
-          <span>Light</span>
-          <span className={styles.activeSegment}>Dark</span>
-          <span>System</span>
+          {themeOptions.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              className={theme === option.value ? styles.activeSegment : ''}
+              aria-pressed={theme === option.value}
+              onClick={() => setTheme(option.value)}
+            >
+              {option.label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -113,8 +157,8 @@ export function AccountMenu({
 
       <div className={styles.divider} />
 
-      <MenuRow label="My Community Page" />
-      <MenuRow label="Settings" />
+      <MenuRow label={isVietnamese ? 'Trang cộng đồng của tôi' : 'My Community Page'} />
+      <MenuRow label={isVietnamese ? 'Cài đặt' : 'Settings'} />
 
       <button
         className={`${styles.menuLink} ${styles.logoutButton}`}
@@ -122,7 +166,7 @@ export function AccountMenu({
         role="menuitem"
         onClick={onLogout}
       >
-        Log out
+        {isVietnamese ? 'Đăng xuất' : 'Log out'}
       </button>
 
       <div className={styles.divider} />

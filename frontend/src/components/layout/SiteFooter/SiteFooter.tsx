@@ -1,11 +1,27 @@
 import type { FormEvent } from 'react';
 
 import { PageContainer } from '@/components/layout/PageContainer';
+import { usePreferencesStore } from '@/store/usePreferencesStore';
 
 import { footerGroups } from './footer.data';
 import styles from './SiteFooter.module.css';
 
 export function SiteFooter() {
+  const language = usePreferencesStore((state) => state.language);
+  const currency = usePreferencesStore((state) => state.currency);
+  const setLanguage = usePreferencesStore((state) => state.setLanguage);
+  const setCurrency = usePreferencesStore((state) => state.setCurrency);
+  const vi = language === 'vi';
+  const translations: Record<string, string> = {
+    Products: 'Sản phẩm', Advertise: 'Quảng cáo', 'Top Stories': 'Tin nổi bật',
+    Portfolio: 'Danh mục', Watchlist: 'Theo dõi', Company: 'Công ty',
+    'About us': 'Về chúng tôi', 'Terms of use': 'Điều khoản sử dụng',
+    'Privacy Policy': 'Chính sách riêng tư', 'Cookie preferences': 'Tùy chọn cookie',
+    Careers: 'Tuyển dụng', Support: 'Hỗ trợ', 'Get listed': 'Đăng ký niêm yết',
+    'Request Form': 'Biểu mẫu yêu cầu', 'Contact Support': 'Liên hệ hỗ trợ',
+    Glossary: 'Thuật ngữ', Socials: 'Mạng xã hội', Community: 'Cộng đồng',
+  };
+  const translate = (text: string) => (vi ? translations[text] ?? text : text);
   const handleNewsletterSubmit = (
     event: FormEvent<HTMLFormElement>,
   ) => {
@@ -18,12 +34,15 @@ export function SiteFooter() {
         <PageContainer className={styles.newsletterInner}>
           <div className={styles.newsletterContent}>
             <h2 className={styles.newsletterTitle}>
-              Stay on top of crypto. All the time, any time.
+              {vi
+                ? 'Luôn cập nhật thị trường crypto, mọi lúc mọi nơi.'
+                : 'Stay on top of crypto. All the time, any time.'}
             </h2>
 
             <p className={styles.newsletterDescription}>
-              Receive the latest crypto news, market research,
-              product updates and important ecosystem events.
+              {vi
+                ? 'Nhận tin tức crypto, nghiên cứu thị trường, cập nhật sản phẩm và các sự kiện hệ sinh thái mới nhất.'
+                : 'Receive the latest crypto news, market research, product updates and important ecosystem events.'}
             </p>
 
             <form
@@ -34,7 +53,7 @@ export function SiteFooter() {
                 className={styles.srOnly}
                 htmlFor="footer-newsletter-email"
               >
-                Email address
+                {vi ? 'Địa chỉ email' : 'Email address'}
               </label>
 
               <input
@@ -42,7 +61,7 @@ export function SiteFooter() {
                 className={styles.newsletterInput}
                 type="email"
                 autoComplete="email"
-                placeholder="Enter your e-mail address"
+                placeholder={vi ? 'Nhập địa chỉ email' : 'Enter your e-mail address'}
                 required
               />
 
@@ -50,7 +69,7 @@ export function SiteFooter() {
                 className={styles.newsletterButton}
                 type="submit"
               >
-                Submit
+                {vi ? 'Đăng ký' : 'Submit'}
               </button>
             </form>
           </div>
@@ -79,12 +98,20 @@ export function SiteFooter() {
           </a>
 
           <div className={styles.preferences}>
-            <button type="button" className={styles.preferenceButton}>
-              Language
+            <button
+              type="button"
+              className={styles.preferenceButton}
+              onClick={() => setLanguage(vi ? 'en' : 'vi')}
+            >
+              {vi ? 'Tiếng Việt' : 'English'}
             </button>
 
-            <button type="button" className={styles.preferenceButton}>
-              USD
+            <button
+              type="button"
+              className={styles.preferenceButton}
+              onClick={() => setCurrency(currency === 'USD' ? 'VND' : 'USD')}
+            >
+              {currency}
             </button>
           </div>
         </div>
@@ -92,17 +119,19 @@ export function SiteFooter() {
         <div className={styles.linkGrid}>
           {footerGroups.map((group) => (
             <section key={group.title} className={styles.linkGroup}>
-              <h3 className={styles.groupTitle}>{group.title}</h3>
+              <h3 className={styles.groupTitle}>{translate(group.title)}</h3>
 
               <ul className={styles.linkList}>
                 {group.links.map((link) => (
                   <li key={link.label}>
                     <a className={styles.link} href={link.href}>
-                      <span>{link.label}</span>
+                      <span>{translate(link.label)}</span>
 
                       {link.badge && (
                         <span className={styles.badge}>
-                          {link.badge}
+                          {vi && link.badge === "We're hiring!"
+                            ? 'Đang tuyển dụng!'
+                            : link.badge}
                         </span>
                       )}
                     </a>
@@ -115,17 +144,17 @@ export function SiteFooter() {
 
         <div className={styles.bottomRow}>
           <p className={styles.copyright}>
-            © {new Date().getFullYear()} 1CoinMarketCap. All rights
-            reserved.
+            © {new Date().getFullYear()} 1CoinMarketCap.{' '}
+            {vi ? 'Đã đăng ký bản quyền.' : 'All rights reserved.'}
           </p>
 
           <div className={styles.storeBadges}>
             <span className={styles.storeBadge}>
-              Download on the App Store
+              {vi ? 'Tải trên App Store' : 'Download on the App Store'}
             </span>
 
             <span className={styles.storeBadge}>
-              Get it on Google Play
+              {vi ? 'Tải trên Google Play' : 'Get it on Google Play'}
             </span>
           </div>
         </div>

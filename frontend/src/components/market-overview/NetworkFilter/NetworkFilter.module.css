@@ -62,7 +62,7 @@
   justify-content: center;
   gap: 5px;
   color: var(--cmc-text-secondary);
-  cursor: default;
+  cursor: pointer;
   font: inherit;
   font-size: 12px;
   white-space: nowrap;
@@ -77,6 +77,15 @@
   border-radius: var(--cmc-radius-medium);
   background-color: var(--cmc-bg-card);
   color: var(--cmc-text-primary);
+}
+
+.actionButton:hover {
+  background-color: var(--cmc-bg-hover);
+}
+
+.filterLink[aria-disabled='true'],
+.actionButton[aria-disabled='true'] {
+  cursor: default;
 }
 
 .filterIcon,

@@ -6,13 +6,23 @@ import {
 
 import { AccountMenu } from '@/components/auth/AccountMenu';
 import { AuthModal } from '@/components/auth/AuthModal';
-import { SearchModal } from '@/components/search/SearchModal';
+import { SearchModal } from '@/components/search';
 import { useAuthStore } from '@/store/useAuthStore';
+import { usePreferencesStore } from '@/store/usePreferencesStore';
 
 import { primaryNavigation } from './navigation.data';
 import styles from './MainHeader.module.css';
 
 export function MainHeader() {
+  const language = usePreferencesStore((state) => state.language);
+  const isVietnamese = language === 'vi';
+  const navigationTranslations: Record<string, string> = {
+    Cryptocurrencies: 'Tiền mã hóa',
+    DexScan: 'Quét DEX',
+    Exchanges: 'Sàn giao dịch',
+    Community: 'Cộng đồng',
+    Products: 'Sản phẩm',
+  };
   const [authModalOpen, setAuthModalOpen] =
     useState(false);
   const [accountMenuOpen, setAccountMenuOpen] =
@@ -125,7 +135,11 @@ export function MainHeader() {
                     className={styles.navigationLink}
                     href={item.href}
                   >
-                    <span>{item.label}</span>
+                    <span>
+                      {isVietnamese
+                        ? navigationTranslations[item.label] ?? item.label
+                        : item.label}
+                    </span>
 
                     {item.hasDropdown && (
                       <span
@@ -156,7 +170,7 @@ export function MainHeader() {
                 <path d="M8 1.5a6.5 6.5 0 1 0 6.5 6.5H8V1.5Z" />
                 <path d="M9.5 1.7a5 5 0 0 1 4.8 4.8H9.5V1.7Z" />
               </svg>
-              <span>Portfolio</span>
+              <span>{isVietnamese ? 'Danh mục' : 'Portfolio'}</span>
             </a>
 
             <a
@@ -170,7 +184,7 @@ export function MainHeader() {
               >
                 <path d="m8 1.4 2 4.05 4.47.65-3.24 3.15.77 4.45L8 11.6l-4 2.1.77-4.45L1.53 6.1 6 5.45 8 1.4Z" />
               </svg>
-              <span>Watchlist</span>
+              <span>{isVietnamese ? 'Theo dõi' : 'Watchlist'}</span>
             </a>
 
             <button
@@ -187,7 +201,7 @@ export function MainHeader() {
               </span>
 
               <span className={styles.searchText}>
-                Search
+                {isVietnamese ? 'Tìm kiếm' : 'Search'}
               </span>
 
               <kbd className={styles.shortcut}>/</kbd>
@@ -201,7 +215,7 @@ export function MainHeader() {
                   setAuthModalOpen(true)
                 }
               >
-                Log In
+                {isVietnamese ? 'Đăng nhập' : 'Log In'}
               </button>
             ) : (
               <div

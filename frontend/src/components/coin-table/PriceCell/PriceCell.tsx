@@ -4,6 +4,7 @@ import {
 } from '../utils/coinFormatters';
 
 import styles from './PriceCell.module.css';
+import { usePreferencesStore } from '@/store/usePreferencesStore';
 
 type PriceCellProps = {
   price: number;
@@ -15,6 +16,7 @@ export function PriceCell({
   isUp,
 }: PriceCellProps) {
   const fractionDigits = getPriceFractionDigits(price);
+  const currency = usePreferencesStore((state) => state.currency);
 
   const priceClassName = [
     styles.price,
@@ -26,7 +28,7 @@ export function PriceCell({
 
   return (
     <span className={priceClassName}>
-      {formatCurrency(price, fractionDigits)}
+      {formatCurrency(price, fractionDigits, currency)}
     </span>
   );
 }

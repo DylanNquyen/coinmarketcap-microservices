@@ -1,6 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { useCryptoStore } from '@/store/useCryptoStore';
+import {
+  usePreferencesStore,
+} from '@/store/usePreferencesStore';
+import {
+  formatCompactCurrency,
+  formatCurrency,
+} from '@/components/coin-table/utils/coinFormatters';
 
 import styles from './SearchModal.module.css';
 
@@ -8,22 +15,10 @@ type SearchModalProps = {
   onClose: () => void;
 };
 
-const compactCurrencyFormatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  notation: 'compact',
-  maximumFractionDigits: 2,
-});
-
-const priceFormatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  maximumFractionDigits: 6,
-});
-
 export function SearchModal({ onClose }: SearchModalProps) {
   const [query, setQuery] = useState('');
   const coins = useCryptoStore((state) => state.coins);
+  const currency = usePreferencesStore((state) => state.currency);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -120,7 +115,7 @@ export function SearchModal({ onClose }: SearchModalProps) {
                   <img src={coin.image} alt="" />
                   <div>
                     <strong>{coin.symbol}</strong>
-                    <span>{priceFormatter.format(coin.price)}</span>
+                    <span>{formatCurrency(coin.price, 6, currency)}</span>
                   </div>
                   <span className={styles.boostRank}>
                     ↗ {50 - index * 10}
@@ -166,16 +161,16 @@ export function SearchModal({ onClose }: SearchModalProps) {
 
                     <div className={styles.marketStats}>
                       <span>
-                        MCap: {compactCurrencyFormatter.format(coin.marketCap)}
+                        MCap: {formatCompactCurrency(coin.marketCap, currency)}
                       </span>
                       <span>
                         Vol(24h):{' '}
-                        {compactCurrencyFormatter.format(coin.volume24h)}
+                        {formatCompactCurrency(coin.volume24h, currency)}
                       </span>
                     </div>
 
                     <div className={styles.priceStats}>
-                      <strong>{priceFormatter.format(coin.price)}</strong>
+                      <strong>{formatCurrency(coin.price, 6, currency)}</strong>
                       <span
                         className={
                           changePositive

@@ -297,6 +297,7 @@
   .inner {
     gap: var(--cmc-space-2);
   }
+
 }
 
 @media (max-width: 429.98px) {
@@ -320,4 +321,5 @@
   .accountChevron {
     display: none;
   }
+
 }

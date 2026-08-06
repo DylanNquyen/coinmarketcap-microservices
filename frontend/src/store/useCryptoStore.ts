@@ -101,6 +101,7 @@ export interface Coin {
   volume24h: number;
   circulatingSupply: number;
   sparkline7d: number[];
+  networks?: string[];
   isUp?: boolean;
 }
 

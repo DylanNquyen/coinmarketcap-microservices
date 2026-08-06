@@ -5,6 +5,11 @@ import {
   useState,
 } from 'react';
 
+import { ColumnSettingsModal } from '@/components/coin-table/ColumnSettingsModal';
+import { FilterModal } from '@/components/coin-table/FilterModal';
+import { usePreferencesStore } from '@/store/usePreferencesStore';
+import { useNetworkFilterStore } from '@/store/useNetworkFilterStore';
+
 import {
   featuredNetworkItems,
   networkItems,
@@ -30,9 +35,18 @@ function NetworkIcon({ network }: NetworkIconProps) {
 }
 
 export function NetworkFilter() {
-  const [activeId, setActiveId] = useState<NetworkId>('all');
+  const language = usePreferencesStore((state) => state.language);
+  const vi = language === 'vi';
+  const activeId = useNetworkFilterStore((state) => state.activeNetwork);
+  const setActiveNetwork = useNetworkFilterStore(
+    (state) => state.setActiveNetwork,
+  );
   const [moreOpen, setMoreOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [columnsModalOpen, setColumnsModalOpen] =
+    useState(false);
+  const [filtersModalOpen, setFiltersModalOpen] =
+    useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -85,7 +99,7 @@ export function NetworkFilter() {
   }, [moreOpen]);
 
   const handleNetworkChange = (networkId: NetworkId) => {
-    setActiveId(networkId);
+    setActiveNetwork(networkId);
     setMoreOpen(false);
     setSearchQuery('');
   };
@@ -114,7 +128,9 @@ export function NetworkFilter() {
                     }
                   >
                     <NetworkIcon network={network} />
-                    <span>{network.name}</span>
+                    <span>
+                      {vi && network.id === 'all' ? 'Tất cả mạng' : network.name}
+                    </span>
                   </button>
                 </li>
               );
@@ -136,7 +152,7 @@ export function NetworkFilter() {
               setSearchQuery('');
             }}
           >
-            <span>More</span>
+            <span>{vi ? 'Thêm' : 'More'}</span>
             <span
               className={`${styles.arrow} ${
                 moreOpen ? styles.arrowOpen : ''
@@ -163,7 +179,7 @@ export function NetworkFilter() {
                   className={styles.searchInput}
                   type="search"
                   value={searchQuery}
-                  placeholder="Search"
+                  placeholder={vi ? 'Tìm kiếm' : 'Search'}
                   aria-label="Search networks"
                   onChange={(event) =>
                     setSearchQuery(event.target.value)
@@ -207,7 +223,7 @@ export function NetworkFilter() {
                   })
                 ) : (
                   <p className={styles.emptyState}>
-                    No networks found
+                    {vi ? 'Không tìm thấy mạng' : 'No networks found'}
                   </p>
                 )}
               </div>
@@ -231,7 +247,7 @@ export function NetworkFilter() {
             >
               <path d="M2 3.25h12L9.4 8.4v3.7l-2.8 1.4V8.4L2 3.25Z" />
             </svg>
-            <span>Market Cap</span>
+            <span>{vi ? 'Vốn hóa' : 'Market Cap'}</span>
             <span className={styles.actionChevron} aria-hidden="true">
               {'\u203A'}
             </span>
@@ -249,13 +265,13 @@ export function NetworkFilter() {
             >
               <path d="M2 3.25h12L9.4 8.4v3.7l-2.8 1.4V8.4L2 3.25Z" />
             </svg>
-            <span>Volume (24h)</span>
+            <span>{vi ? 'Khối lượng (24 giờ)' : 'Volume (24h)'}</span>
           </button>
 
           <button
             className={styles.actionButton}
             type="button"
-            aria-disabled="true"
+            onClick={() => setFiltersModalOpen(true)}
           >
             <svg
               className={styles.filterIcon}
@@ -264,13 +280,13 @@ export function NetworkFilter() {
             >
               <path d="M2 3.25h12L9.4 8.4v3.7l-2.8 1.4V8.4L2 3.25Z" />
             </svg>
-            <span>Filters</span>
+            <span>{vi ? 'Bộ lọc' : 'Filters'}</span>
           </button>
 
           <button
             className={styles.actionButton}
             type="button"
-            aria-disabled="true"
+            onClick={() => setColumnsModalOpen(true)}
           >
             <svg
               className={styles.columnsIcon}
@@ -280,10 +296,22 @@ export function NetworkFilter() {
               <rect x="2.25" y="2.75" width="11.5" height="10.5" rx="1" />
               <path d="M6 3v10M10 3v10" />
             </svg>
-            <span>Columns</span>
+            <span>{vi ? 'Cột' : 'Columns'}</span>
           </button>
         </div>
       </div>
+
+      {columnsModalOpen && (
+        <ColumnSettingsModal
+          onClose={() => setColumnsModalOpen(false)}
+        />
+      )}
+
+      {filtersModalOpen && (
+        <FilterModal
+          onClose={() => setFiltersModalOpen(false)}
+        />
+      )}
     </nav>
   );
 }
