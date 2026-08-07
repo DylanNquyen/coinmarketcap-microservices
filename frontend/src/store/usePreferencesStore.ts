@@ -8,9 +8,11 @@ type PreferencesState = {
   language: AppLanguage;
   currency: AppCurrency;
   theme: AppTheme;
+  isAiAssistantEnabled: boolean;
   setLanguage: (language: AppLanguage) => void;
   setCurrency: (currency: AppCurrency) => void;
   setTheme: (theme: AppTheme) => void;
+  setAiAssistantEnabled: (isEnabled: boolean) => void;
   initialize: () => () => void;
 };
 
@@ -18,7 +20,7 @@ const STORAGE_KEY = 'cmc-preferences';
 
 type StoredPreferences = Pick<
   PreferencesState,
-  'language' | 'currency' | 'theme'
+  'language' | 'currency' | 'theme' | 'isAiAssistantEnabled'
 >;
 
 function readPreferences(): StoredPreferences {
@@ -31,9 +33,15 @@ function readPreferences(): StoredPreferences {
       theme: ['light', 'dark', 'system'].includes(value.theme)
         ? value.theme
         : 'dark',
+      isAiAssistantEnabled: value.isAiAssistantEnabled !== false,
     };
   } catch {
-    return { language: 'en', currency: 'USD', theme: 'dark' };
+    return {
+      language: 'en',
+      currency: 'USD',
+      theme: 'dark',
+      isAiAssistantEnabled: true,
+    };
   }
 }
 
@@ -75,6 +83,11 @@ export const usePreferencesStore = create<PreferencesState>((set, get) => ({
     set({ theme });
     applyTheme(theme);
     persistPreferences({ ...get(), theme });
+  },
+
+  setAiAssistantEnabled: (isAiAssistantEnabled) => {
+    set({ isAiAssistantEnabled });
+    persistPreferences({ ...get(), isAiAssistantEnabled });
   },
 
   initialize: () => {

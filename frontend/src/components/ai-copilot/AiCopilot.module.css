@@ -337,3 +337,26 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.hiddenNotice {
+  display: flex;
+  width: 290px;
+  max-width: calc(100vw - 24px);
+  padding: 14px 16px;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  background: #242734;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  color: #aeb4c4;
+  font-size: 12px;
+  line-height: 1.5;
+  animation: slideUp 0.2s ease-out;
+}
+
+.hiddenNotice strong {
+  color: #d7dbea;
+  font-size: 13px;
+  font-weight: 500;
+}

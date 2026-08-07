@@ -3,6 +3,8 @@ import {
   useRef,
   useState,
 } from 'react';
+import { QrcodeOutlined } from '@ant-design/icons';
+import { QRCode } from 'antd';
 
 import { AccountMenu } from '@/components/auth/AccountMenu';
 import { AuthModal } from '@/components/auth/AuthModal';
@@ -29,9 +31,11 @@ export function MainHeader() {
     useState(false);
   const [searchModalOpen, setSearchModalOpen] =
     useState(false);
+  const [qrMenuOpen, setQrMenuOpen] = useState(false);
 
   const accountMenuRef =
     useRef<HTMLDivElement>(null);
+  const qrMenuRef = useRef<HTMLDivElement>(null);
 
   const user = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore(
@@ -40,12 +44,21 @@ export function MainHeader() {
   const logout = useAuthStore((state) => state.logout);
 
   useEffect(() => {
-    if (!accountMenuOpen) {
+    if (!accountMenuOpen && !qrMenuOpen) {
       return;
     }
 
     const handlePointerDown = (event: MouseEvent) => {
       if (
+        qrMenuOpen &&
+        qrMenuRef.current &&
+        !qrMenuRef.current.contains(event.target as Node)
+      ) {
+        setQrMenuOpen(false);
+      }
+
+      if (
+        accountMenuOpen &&
         accountMenuRef.current &&
         !accountMenuRef.current.contains(
           event.target as Node,
@@ -58,6 +71,7 @@ export function MainHeader() {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setAccountMenuOpen(false);
+        setQrMenuOpen(false);
       }
     };
 
@@ -77,7 +91,7 @@ export function MainHeader() {
         handleEscape,
       );
     };
-  }, [accountMenuOpen]);
+  }, [accountMenuOpen, qrMenuOpen]);
 
   useEffect(() => {
     const handleSearchShortcut = (event: KeyboardEvent) => {
@@ -206,6 +220,51 @@ export function MainHeader() {
 
               <kbd className={styles.shortcut}>/</kbd>
             </button>
+
+            <div className={styles.qrMenu} ref={qrMenuRef}>
+              <button
+                className={styles.qrButton}
+                type="button"
+                aria-label={
+                  isVietnamese
+                    ? 'Tải ứng dụng CoinMarketCap'
+                    : 'Download CoinMarketCap app'
+                }
+                aria-expanded={qrMenuOpen}
+                aria-haspopup="dialog"
+                onClick={() => {
+                  setQrMenuOpen((current) => !current);
+                  setAccountMenuOpen(false);
+                }}
+              >
+                <QrcodeOutlined aria-hidden="true" />
+              </button>
+
+              {qrMenuOpen && (
+                <div className={styles.qrPopover} role="dialog">
+                  <div className={styles.qrCodeFrame}>
+                    <QRCode
+                      value="https://coinmarketcap.com/mobile/"
+                      type="svg"
+                      size={156}
+                      bordered={false}
+                      color="#171924"
+                      bgColor="#ffffff"
+                    />
+                    <span className={styles.qrLogo} aria-hidden="true">
+                      〽
+                    </span>
+                  </div>
+                  <p className={styles.qrCaption}>
+                    {isVietnamese ? (
+                      <>Quét để tải ứng dụng<br />CoinMarketCap</>
+                    ) : (
+                      <>Scan to Download<br />CoinMarketCap App</>
+                    )}
+                  </p>
+                </div>
+              )}
+            </div>
 
             {!isAuthenticated ? (
               <button

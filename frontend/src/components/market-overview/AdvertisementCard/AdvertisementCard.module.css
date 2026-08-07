@@ -56,10 +56,11 @@
 }
 
 .button {
+  position: relative;
   display: inline-flex;
   min-width: 150px;
   min-height: 44px;
-  padding: var(--cmc-space-2) var(--cmc-space-3);
+  padding: var(--cmc-space-2) 30px var(--cmc-space-2) var(--cmc-space-3);
   align-items: center;
   justify-content: center;
   gap: var(--cmc-space-1);

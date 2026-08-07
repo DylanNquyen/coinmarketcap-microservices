@@ -289,6 +289,7 @@ import {
   type AiCopilotAskEventDetail,
 } from './aiCopilot.events';
 import styles from './AiCopilot.module.css';
+import { usePreferencesStore } from '@/store/usePreferencesStore';
 
 interface Message {
   sender: 'user' | 'ai';
@@ -307,9 +308,18 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 export const AiCopilot: React.FC = () => {
   const [visible, setVisible] = useState(false);
+  const [showHiddenNotice, setShowHiddenNotice] = useState(false);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const language = usePreferencesStore((state) => state.language);
+  const isAiAssistantEnabled = usePreferencesStore(
+    (state) => state.isAiAssistantEnabled,
+  );
+  const setAiAssistantEnabled = usePreferencesStore(
+    (state) => state.setAiAssistantEnabled,
+  );
+  const isVietnamese = language === 'vi';
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null); // Ref dùng để focus ô gõ chữ khi bấm hotkey
@@ -330,7 +340,9 @@ export const AiCopilot: React.FC = () => {
         if (isTypingInOtherInput) return;
 
         e.preventDefault(); // Ngăn nhập ký tự '?' vào trang web
-        setVisible((prev) => !prev);
+        if (isAiAssistantEnabled) {
+          setVisible((prev) => !prev);
+        }
       }
     };
 
@@ -338,7 +350,27 @@ export const AiCopilot: React.FC = () => {
     return () => {
       window.removeEventListener('keydown', handleGlobalKeyDown);
     };
-  }, []);
+  }, [isAiAssistantEnabled]);
+
+  useEffect(() => {
+    if (!isAiAssistantEnabled) {
+      recognitionRef.current?.stop();
+    }
+  }, [isAiAssistantEnabled]);
+
+  useEffect(() => {
+    if (!showHiddenNotice) return;
+
+    const timeoutId = window.setTimeout(() => setShowHiddenNotice(false), 4000);
+    return () => window.clearTimeout(timeoutId);
+  }, [showHiddenNotice]);
+
+  const hideAssistant = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    setVisible(false);
+    setShowHiddenNotice(true);
+    setAiAssistantEnabled(false);
+  };
 
   // Tự động Focus vào ô nhập tin nhắn khi mở AI Copilot
   useEffect(() => {
@@ -527,6 +559,8 @@ export const AiCopilot: React.FC = () => {
         return;
       }
 
+      if (!isAiAssistantEnabled) return;
+
       setVisible(true);
       setInput(prompt);
       void handleSend(prompt);
@@ -537,7 +571,7 @@ export const AiCopilot: React.FC = () => {
     return () => {
       window.removeEventListener(AI_COPILOT_ASK_EVENT, handleAskRequest);
     };
-  }, [handleSend, loading]);
+  }, [handleSend, isAiAssistantEnabled, loading]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -555,6 +589,21 @@ export const AiCopilot: React.FC = () => {
 
   return (
     <div className={styles.copilotWrapper}>
+      {showHiddenNotice && (
+        <div className={styles.hiddenNotice} role="status">
+          <strong>
+            {isVietnamese ? 'Đã ẩn Trợ lý AI CMC' : 'CMC AI Assistant hidden'}
+          </strong>
+          <span>
+            {isVietnamese
+              ? 'Bạn có thể bật lại bất kỳ lúc nào trong menu người dùng.'
+              : 'You can enable it again any time in the user menu.'}
+          </span>
+        </div>
+      )}
+
+      {isAiAssistantEnabled && (
+        <>
       {visible && (
         <div className={styles.chatCard}>
           <div className={styles.cardHeader}>
@@ -667,13 +716,16 @@ export const AiCopilot: React.FC = () => {
           <button
   type="button"
   className={styles.hideButton}
-  title="Ẩn AI Copilot"
-  aria-label="Ẩn AI Copilot"
+  title={isVietnamese ? 'Ẩn Trợ lý AI CMC' : 'Hide CMC AI Assistant'}
+  aria-label={isVietnamese ? 'Ẩn Trợ lý AI CMC' : 'Hide CMC AI Assistant'}
+  onClick={hideAssistant}
 >
   👁
 </button>
         </div>
       </div>
+        </>
+      )}
     </div>
   );
 };

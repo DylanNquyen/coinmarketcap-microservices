@@ -228,6 +228,90 @@
   background-color: var(--cmc-bg-elevated);
 }
 
+.qrMenu {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.qrButton {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 10px;
+  background-color: var(--cmc-bg-elevated);
+  color: var(--cmc-text-secondary);
+  cursor: pointer;
+  font-size: 17px;
+  transition:
+    background-color var(--cmc-transition-fast),
+    color var(--cmc-transition-fast);
+}
+
+.qrButton:hover,
+.qrButton[aria-expanded='true'] {
+  background-color: var(--cmc-bg-hover);
+  color: var(--cmc-text-primary);
+}
+
+.qrButton:focus-visible {
+  outline: 2px solid var(--cmc-brand-primary);
+  outline-offset: 2px;
+}
+
+.qrPopover {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  z-index: 510;
+  width: 198px;
+  padding: 16px 16px 13px;
+  border-radius: 10px;
+  background-color: #242734;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 40%);
+}
+
+.qrCodeFrame {
+  position: relative;
+  display: flex;
+  width: 166px;
+  height: 166px;
+  padding: 5px;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+}
+
+.qrLogo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: inline-flex;
+  width: 38px;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background-color: #fff;
+  color: #171924;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.qrCaption {
+  margin: 10px 0 0;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+}
+
 .avatar {
   display: inline-flex;
   width: 30px;
@@ -296,6 +380,10 @@
 
   .inner {
     gap: var(--cmc-space-2);
+  }
+
+  .qrMenu {
+    display: none;
   }
 
 }

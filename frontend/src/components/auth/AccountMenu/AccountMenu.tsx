@@ -58,9 +58,15 @@ export function AccountMenu({
   const language = usePreferencesStore((state) => state.language);
   const currency = usePreferencesStore((state) => state.currency);
   const theme = usePreferencesStore((state) => state.theme);
+  const isAiAssistantEnabled = usePreferencesStore(
+    (state) => state.isAiAssistantEnabled,
+  );
   const setLanguage = usePreferencesStore((state) => state.setLanguage);
   const setCurrency = usePreferencesStore((state) => state.setCurrency);
   const setTheme = usePreferencesStore((state) => state.setTheme);
+  const setAiAssistantEnabled = usePreferencesStore(
+    (state) => state.setAiAssistantEnabled,
+  );
   const isVietnamese = language === 'vi';
 
   const themeOptions: Array<{ value: AppTheme; label: string }> = [
@@ -145,13 +151,30 @@ export function AccountMenu({
       <MenuRow label="CMC AI Subscription" value="Free  ›" />
 
       <div className={styles.menuRow} role="menuitem">
-        <span>CMC AI Assistant</span>
+        <span>{isVietnamese ? 'Trợ lý AI CMC' : 'CMC AI Assistant'}</span>
         <div
           className={styles.assistantToggle}
-          aria-label="CMC AI Assistant preview"
+          role="group"
+          aria-label={
+            isVietnamese ? 'Hiển thị Trợ lý AI CMC' : 'CMC AI Assistant visibility'
+          }
         >
-          <span className={styles.activeToggle}>Show</span>
-          <span>Hide</span>
+          <button
+            type="button"
+            className={isAiAssistantEnabled ? styles.activeToggle : ''}
+            aria-pressed={isAiAssistantEnabled}
+            onClick={() => setAiAssistantEnabled(true)}
+          >
+            {isVietnamese ? 'Hiện' : 'Show'}
+          </button>
+          <button
+            type="button"
+            className={!isAiAssistantEnabled ? styles.activeToggle : ''}
+            aria-pressed={!isAiAssistantEnabled}
+            onClick={() => setAiAssistantEnabled(false)}
+          >
+            {isVietnamese ? 'Ẩn' : 'Hide'}
+          </button>
         </div>
       </div>
 
