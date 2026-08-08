@@ -1,0 +1,66 @@
+.button {
+  position: fixed;
+  right: 24px;
+  bottom: calc(
+    var(--cmc-bottom-market-bar-height, 32px) + 20px
+  );
+  z-index: 950;
+
+  display: grid;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  place-items: center;
+
+  color: #222531;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 50%;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px) scale(0.94);
+  transition:
+    opacity var(--cmc-transition-normal),
+    transform var(--cmc-transition-normal),
+    background-color var(--cmc-transition-fast);
+}
+
+.visible {
+  opacity: 0.86;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.button:hover {
+  background: rgba(255, 255, 255, 0.94);
+  opacity: 1;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--cmc-brand-primary);
+  outline-offset: 3px;
+  opacity: 1;
+}
+
+.button:active {
+  transform: translateY(1px) scale(0.97);
+}
+
+@media (max-width: 767px) {
+  .button {
+    right: 16px;
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+}

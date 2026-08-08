@@ -2,6 +2,7 @@ import { useEffect, type PropsWithChildren } from 'react';
 
 import { AiCopilot } from '@/components/ai-copilot/AiCopilot';
 import { MainHeader } from '@/components/layout/MainHeader';
+import { ScrollToTop } from '@/components/layout/ScrollToTop';
 import { SecondaryNavigation } from '@/components/layout/SecondaryNavigation';
 import { useCryptoStore } from '@/store/useCryptoStore';
 import { usePreferencesStore } from '@/store/usePreferencesStore';
@@ -34,6 +35,7 @@ export function AppShell({ children }: AppShellProps) {
       <main className={styles.main}>{children}</main>
 
       <SiteFooter />
+      <ScrollToTop />
       <AiCopilot />
       <BottomMarketBar />
     </div>
