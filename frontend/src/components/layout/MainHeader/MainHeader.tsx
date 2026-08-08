@@ -3,7 +3,22 @@ import {
   useRef,
   useState,
 } from 'react';
-import { QrcodeOutlined } from '@ant-design/icons';
+import {
+  BellOutlined,
+  CloseOutlined,
+  DownOutlined,
+  FacebookFilled,
+  InstagramOutlined,
+  LinkedinFilled,
+  PieChartFilled,
+  RedditOutlined,
+  RobotOutlined,
+  SendOutlined,
+  SettingOutlined,
+  StarFilled,
+  TwitterOutlined,
+  QrcodeOutlined,
+} from '@ant-design/icons';
 import { QRCode } from 'antd';
 
 import { AccountMenu } from '@/components/auth/AccountMenu';
@@ -15,18 +30,26 @@ import { usePreferencesStore } from '@/store/usePreferencesStore';
 import { primaryNavigation } from './navigation.data';
 import styles from './MainHeader.module.css';
 
+type AuthMode = 'login' | 'register';
+
 export function MainHeader() {
   const language = usePreferencesStore((state) => state.language);
   const isVietnamese = language === 'vi';
   const navigationTranslations: Record<string, string> = {
     Cryptocurrencies: 'Tiền mã hóa',
+    Dashboards: 'Bảng điều khiển',
     DexScan: 'Quét DEX',
     Exchanges: 'Sàn giao dịch',
     Community: 'Cộng đồng',
+    API: 'API',
     Products: 'Sản phẩm',
   };
   const [authModalOpen, setAuthModalOpen] =
     useState(false);
+  const [authMode, setAuthMode] = useState<AuthMode>('login');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [expandedMobileItem, setExpandedMobileItem] = useState<string | null>(null);
+  const [openPreferenceMenu, setOpenPreferenceMenu] = useState<'language' | 'currency' | null>(null);
   const [accountMenuOpen, setAccountMenuOpen] =
     useState(false);
   const [searchModalOpen, setSearchModalOpen] =
@@ -36,12 +59,48 @@ export function MainHeader() {
   const accountMenuRef =
     useRef<HTMLDivElement>(null);
   const qrMenuRef = useRef<HTMLDivElement>(null);
+  const preferenceMenuRef = useRef<HTMLDivElement>(null);
 
   const user = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore(
     (state) => state.isAuthenticated,
   );
   const logout = useAuthStore((state) => state.logout);
+  const currency = usePreferencesStore((state) => state.currency);
+  const theme = usePreferencesStore((state) => state.theme);
+  const setLanguage = usePreferencesStore((state) => state.setLanguage);
+  const setCurrency = usePreferencesStore((state) => state.setCurrency);
+  const setTheme = usePreferencesStore((state) => state.setTheme);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMobileMenuOpen(false);
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleEscape);
+    };
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    if (!openPreferenceMenu) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!preferenceMenuRef.current?.contains(event.target as Node)) {
+        setOpenPreferenceMenu(null);
+      }
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => document.removeEventListener('pointerdown', handlePointerDown);
+  }, [openPreferenceMenu]);
 
   useEffect(() => {
     if (!accountMenuOpen && !qrMenuOpen) {
@@ -120,10 +179,71 @@ export function MainHeader() {
   const handleLogout = () => {
     logout();
     setAccountMenuOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  const openAuthModal = (mode: AuthMode) => {
+    setAuthMode(mode);
+    setMobileMenuOpen(false);
+    setAuthModalOpen(true);
   };
 
   const displayName =
     user?.email?.split('@')[0] ?? 'Account';
+
+  const mobileLabels = isVietnamese
+    ? {
+        watchlist: 'Danh sách theo dõi',
+        portfolio: 'Danh mục đầu tư',
+        diamonds: 'Kim cương của tôi',
+        ai: 'CMC AI',
+        notifications: 'Thông báo',
+        settings: 'Cài đặt',
+        logout: 'Đăng xuất',
+        register: 'Tạo tài khoản',
+        login: 'Đăng nhập',
+      }
+    : {
+        watchlist: 'Watchlist',
+        portfolio: 'Portfolio',
+        diamonds: 'My Diamonds',
+        ai: 'CMC AI',
+        notifications: 'Notifications',
+        settings: 'Settings',
+        logout: 'Log out',
+        register: 'Create an account',
+        login: 'Log in',
+      };
+
+  const mobileSubmenus: Record<string, string[]> = {
+    Cryptocurrencies: isVietnamese
+      ? ['Xếp hạng', 'Danh mục', 'Lịch sử']
+      : ['Ranking', 'Categories', 'Historical data'],
+    Dashboards: isVietnamese
+      ? ['Tổng quan thị trường', 'Xu hướng']
+      : ['Market overview', 'Trending'],
+    DexScan: isVietnamese
+      ? ['Cặp giao dịch mới', 'Token xu hướng']
+      : ['New pairs', 'Trending tokens'],
+    Exchanges: isVietnamese
+      ? ['Sàn giao dịch Spot', 'Sàn phái sinh']
+      : ['Spot exchanges', 'Derivatives'],
+    Community: isVietnamese
+      ? ['Bảng tin', 'Bài viết']
+      : ['Feeds', 'Articles'],
+    API: isVietnamese
+      ? ['Gói API', 'Tài liệu API']
+      : ['API plans', 'API documentation'],
+    Products: isVietnamese
+      ? ['Bộ chuyển đổi', 'Lịch sự kiện']
+      : ['Converter', 'Events calendar'],
+    'CMC AI': isVietnamese
+      ? ['Trợ lý AI', 'Phân tích thị trường']
+      : ['AI assistant', 'Market analysis'],
+    Settings: isVietnamese
+      ? ['Tài khoản', 'Tùy chọn hiển thị']
+      : ['Account', 'Display preferences'],
+  };
 
   return (
     <>
@@ -270,9 +390,7 @@ export function MainHeader() {
               <button
                 className={styles.loginButton}
                 type="button"
-                onClick={() =>
-                  setAuthModalOpen(true)
-                }
+                onClick={() => openAuthModal('login')}
               >
                 {isVietnamese ? 'Đăng nhập' : 'Log In'}
               </button>
@@ -335,7 +453,10 @@ export function MainHeader() {
             <button
               className={styles.menuButton}
               type="button"
-              aria-label="Open navigation menu"
+              aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation"
+              onClick={() => setMobileMenuOpen((current) => !current)}
             >
               <span />
               <span />
@@ -345,8 +466,102 @@ export function MainHeader() {
         </div>
       </header>
 
+      {mobileMenuOpen && (
+        <div id="mobile-navigation" className={styles.mobileMenu} role="dialog" aria-modal="true" aria-label="Mobile navigation">
+          <div className={styles.mobileMenuHeader}>
+            <a className={styles.logo} href="/" onClick={() => setMobileMenuOpen(false)}>
+              <span className={styles.logoMark}>1</span><span>CoinMarketCap</span>
+            </a>
+            <button className={styles.closeButton} type="button" aria-label="Close navigation menu" onClick={() => setMobileMenuOpen(false)}><CloseOutlined /></button>
+          </div>
+
+          <nav aria-label="Mobile navigation">
+            <ul className={styles.mobileNavigationList}>
+              {primaryNavigation.map((item) => (
+                <li key={item.label}>
+                  <button
+                    className={styles.mobileNavButton}
+                    type="button"
+                    aria-expanded={expandedMobileItem === item.label}
+                    onClick={() => setExpandedMobileItem((current) => current === item.label ? null : item.label)}
+                  >
+                    <span>{isVietnamese ? navigationTranslations[item.label] ?? item.label : item.label}</span>
+                    <DownOutlined className={styles.mobileChevron} aria-hidden="true" />
+                  </button>
+                  {expandedMobileItem === item.label && (
+                    <ul className={styles.mobileSubmenu}>
+                      {mobileSubmenus[item.label].map((label) => <li key={label}><a href={item.href} onClick={() => setMobileMenuOpen(false)}>{label}</a></li>)}
+                    </ul>
+                  )}
+                </li>
+              ))}
+              <li><a href="#watchlist" onClick={() => setMobileMenuOpen(false)}><span className={styles.mobileItemLabel}><StarFilled /><span>{mobileLabels.watchlist}</span></span></a></li>
+              <li><a href="#portfolio" onClick={() => setMobileMenuOpen(false)}><span className={styles.mobileItemLabel}><PieChartFilled /><span>{mobileLabels.portfolio}</span></span></a></li>
+              <li><a href="#diamonds" onClick={() => setMobileMenuOpen(false)}><span className={styles.mobileItemLabel}><svg className={styles.diamondIcon} viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8 8 3h8l4 5-8 13L4 8Zm1.8 0h12.4L15.3 4.5H8.7L5.8 8Zm1.1 1.5 5.1 8.2 5.1-8.2H6.9Z" /></svg><span>{mobileLabels.diamonds}</span></span></a></li>
+              <li>
+                <button className={styles.mobileNavButton} type="button" aria-expanded={expandedMobileItem === 'CMC AI'} onClick={() => setExpandedMobileItem((current) => current === 'CMC AI' ? null : 'CMC AI')}>
+                  <span className={styles.mobileItemLabel}><RobotOutlined /><span>{mobileLabels.ai}</span></span><DownOutlined className={styles.mobileChevron} />
+                </button>
+                {expandedMobileItem === 'CMC AI' && <ul className={styles.mobileSubmenu}>{mobileSubmenus['CMC AI'].map((label) => <li key={label}><a href="#cmc-ai" onClick={() => setMobileMenuOpen(false)}>{label}</a></li>)}</ul>}
+              </li>
+              <li><a href="#notifications" onClick={() => setMobileMenuOpen(false)}><span className={styles.mobileItemLabel}><BellOutlined /><span>{mobileLabels.notifications}</span></span></a></li>
+              <li>
+                <button className={styles.mobileNavButton} type="button" aria-expanded={expandedMobileItem === 'Settings'} onClick={() => setExpandedMobileItem((current) => current === 'Settings' ? null : 'Settings')}>
+                  <span className={styles.mobileItemLabel}>{isAuthenticated ? <span className={styles.mobileAvatar}>{displayName.charAt(0).toUpperCase()}</span> : <SettingOutlined />}<span>{mobileLabels.settings}</span></span><DownOutlined className={styles.mobileChevron} />
+                </button>
+                {expandedMobileItem === 'Settings' && <ul className={styles.mobileSubmenu}>{mobileSubmenus.Settings.map((label) => <li key={label}><a href="#settings" onClick={() => setMobileMenuOpen(false)}>{label}</a></li>)}</ul>}
+              </li>
+            </ul>
+          </nav>
+
+          <div className={styles.mobileMenuActions}>
+            {isAuthenticated ? <button type="button" onClick={handleLogout}>{mobileLabels.logout}</button> : <><button className={styles.primaryMobileAction} type="button" onClick={() => openAuthModal('register')}>{mobileLabels.register}</button><button className={styles.primaryMobileAction} type="button" onClick={() => openAuthModal('login')}>{mobileLabels.login}</button></>}
+          </div>
+
+          <div className={styles.preferenceRow} ref={preferenceMenuRef}>
+            <div className={styles.preferenceDropdown}>
+              <button type="button" aria-haspopup="listbox" aria-expanded={openPreferenceMenu === 'language'} onClick={() => setOpenPreferenceMenu((current) => current === 'language' ? null : 'language')}>
+                <span>{language === 'vi' ? 'Tiếng Việt' : 'English'}</span><DownOutlined />
+              </button>
+              {openPreferenceMenu === 'language' && <div className={styles.preferenceMenu} role="listbox" aria-label="Language">
+                <button className={language === 'en' ? styles.selectedPreference : ''} role="option" aria-selected={language === 'en'} type="button" onClick={() => { setLanguage('en'); setOpenPreferenceMenu(null); }}>English</button>
+                <button className={language === 'vi' ? styles.selectedPreference : ''} role="option" aria-selected={language === 'vi'} type="button" onClick={() => { setLanguage('vi'); setOpenPreferenceMenu(null); }}>Tiếng Việt</button>
+              </div>}
+            </div>
+            <div className={styles.preferenceDropdown}>
+              <button type="button" aria-haspopup="listbox" aria-expanded={openPreferenceMenu === 'currency'} onClick={() => setOpenPreferenceMenu((current) => current === 'currency' ? null : 'currency')}>
+                <span>{currency}</span><DownOutlined />
+              </button>
+              {openPreferenceMenu === 'currency' && <div className={styles.preferenceMenu} role="listbox" aria-label="Currency">
+                <button className={currency === 'USD' ? styles.selectedPreference : ''} role="option" aria-selected={currency === 'USD'} type="button" onClick={() => { setCurrency('USD'); setOpenPreferenceMenu(null); }}>USD</button>
+                <button className={currency === 'VND' ? styles.selectedPreference : ''} role="option" aria-selected={currency === 'VND'} type="button" onClick={() => { setCurrency('VND'); setOpenPreferenceMenu(null); }}>VND</button>
+              </div>}
+            </div>
+          </div>
+
+          <div className={styles.themeSelector}>
+            {(['light', 'dark', 'system'] as const).map((option) => {
+              const themeLabels = isVietnamese
+                ? { light: 'Sáng', dark: 'Tối', system: 'Hệ thống' }
+                : { light: 'Light', dark: 'Dark', system: 'System' };
+
+              return <button className={theme === option ? styles.activeTheme : ''} type="button" key={option} onClick={() => setTheme(option)}>{themeLabels[option]}</button>;
+            })}
+          </div>
+
+          <div className={styles.mobileLegal}>
+            <p><a href="#disclaimer">{isVietnamese ? 'Miễn trừ trách nhiệm' : 'Disclaimer'}</a> · <a href="#request">{isVietnamese ? 'Biểu mẫu yêu cầu' : 'Request Form'}</a> · <a href="#terms">{isVietnamese ? 'Điều khoản sử dụng' : 'Terms of Use'}</a></p>
+            <p><a href="#privacy">{isVietnamese ? 'Chính sách riêng tư' : 'Privacy Policy'}</a> · <a href="#about">{isVietnamese ? 'Giới thiệu' : 'About'}</a></p>
+            <div className={styles.mobileSocials} aria-label="Social media">
+              <a href="#twitter" aria-label="X"><TwitterOutlined /></a><a href="#facebook" aria-label="Facebook"><FacebookFilled /></a><a href="#telegram" aria-label="Telegram"><SendOutlined /></a><a href="#linkedin" aria-label="LinkedIn"><LinkedinFilled /></a><a href="#instagram" aria-label="Instagram"><InstagramOutlined /></a><a href="#reddit" aria-label="Reddit"><RedditOutlined /></a>
+            </div>
+          </div>
+        </div>
+      )}
+
       <AuthModal
         open={authModalOpen}
+        initialMode={authMode}
         onClose={() => setAuthModalOpen(false)}
       />
 
