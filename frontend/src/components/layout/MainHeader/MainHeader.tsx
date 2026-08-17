@@ -559,11 +559,12 @@ export function MainHeader() {
         </div>
       )}
 
-      <AuthModal
-        open={authModalOpen}
-        initialMode={authMode}
-        onClose={() => setAuthModalOpen(false)}
-      />
+      {authModalOpen && (
+        <AuthModal
+          initialMode={authMode}
+          onClose={() => setAuthModalOpen(false)}
+        />
+      )}
 
       {searchModalOpen && (
         <SearchModal

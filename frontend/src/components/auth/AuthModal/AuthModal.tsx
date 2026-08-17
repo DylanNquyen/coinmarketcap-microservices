@@ -11,7 +11,6 @@ import styles from './AuthModal.module.css';
 type AuthMode = 'login' | 'register';
 
 type AuthModalProps = {
-  open: boolean;
   initialMode?: AuthMode;
   onClose: () => void;
 };
@@ -19,7 +18,6 @@ type AuthModalProps = {
 const MIN_PASSWORD_LENGTH = 6;
 
 export function AuthModal({
-  open,
   initialMode = 'login',
   onClose,
 }: AuthModalProps) {
@@ -40,24 +38,10 @@ export function AuthModal({
     useState<string | null>(null);
 
   useEffect(() => {
-    if (!open) {
-      return;
-    }
-
-    setMode(initialMode);
-    setEmail('');
-    setPassword('');
-    setConfirmPassword('');
-    setValidationError(null);
-    setSuccessMessage(null);
     clearError();
-  }, [clearError, initialMode, open]);
+  }, [clearError]);
 
   useEffect(() => {
-    if (!open) {
-      return;
-    }
-
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         onClose();
@@ -71,11 +55,7 @@ export function AuthModal({
       document.body.style.overflow = '';
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [onClose, open]);
-
-  if (!open) {
-    return null;
-  }
+  }, [onClose]);
 
   const switchMode = (nextMode: AuthMode) => {
     setMode(nextMode);
