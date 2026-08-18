@@ -1,9 +1,14 @@
-import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { User } from './user.entity';
+import { AuthCredentials, AuthTokenPayload } from './auth.types';
 
 @Injectable()
 export class AuthService {
@@ -14,11 +19,13 @@ export class AuthService {
   ) {}
 
   // 1. Logic Đăng ký
-  async register(body: any) {
+  async register(body: AuthCredentials) {
     const { email, password } = body;
 
     // Kiểm tra trùng email
-    const existingUser = await this.userRepository.findOne({ where: { email } });
+    const existingUser = await this.userRepository.findOne({
+      where: { email },
+    });
     if (existingUser) {
       throw new BadRequestException('Email này đã được sử dụng!');
     }
@@ -37,7 +44,7 @@ export class AuthService {
   }
 
   // 2. Logic Đăng nhập
-  async login(body: any) {
+  async login(body: AuthCredentials) {
     const { email, password } = body;
 
     // Tìm user
@@ -62,14 +69,16 @@ export class AuthService {
       user: { id: user.id, email: user.email },
     };
   }
-  
+
   // Thêm hàm này vào trong AuthService (tuần 2)
   verifyToken(token: string) {
     try {
       const secretKey = 'MY_SECRET_KEY_123'; // Trùng với secret khi đăng ký JwtModule
-      const payload = this.jwtService.verify(token, { secret: secretKey });
+      const payload = this.jwtService.verify<AuthTokenPayload>(token, {
+        secret: secretKey,
+      });
       return { valid: true, user: payload };
-    } catch (error) {
+    } catch {
       throw new UnauthorizedException('Token không hợp lệ!');
     }
   }
