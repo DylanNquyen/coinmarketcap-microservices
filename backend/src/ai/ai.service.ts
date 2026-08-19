@@ -2,6 +2,33 @@ import { Injectable } from '@nestjs/common';
 import { GoogleGenAI } from '@google/genai';
 import { CryptoService } from '../crypto/crypto.service';
 
+
+interface AiMarketCoin {
+  name: string;
+  symbol: string;
+  price: number;
+  priceChange24h: number;
+}
+
+function isAiMarketCoin(value: unknown): value is AiMarketCoin {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+
+  const coin = value as Record<string, unknown>;
+
+  return (
+    typeof coin.name === 'string' &&
+    typeof coin.symbol === 'string' &&
+    typeof coin.price === 'number' &&
+    typeof coin.priceChange24h === 'number'
+  );
+}
+
+function isAiMarketCoinList(value: unknown): value is AiMarketCoin[] {
+  return Array.isArray(value) && value.every(isAiMarketCoin);
+}
+
 @Injectable()
 export class AiService {
   private ai: GoogleGenAI;
@@ -14,7 +41,13 @@ export class AiService {
   async askCopilot(userPrompt: string): Promise<string> {
     try {
       // 1. Lấy dữ liệu top coin làm Context
-      const topCoins = await this.cryptoService.getTopCoins();
+      const marketData: unknown = await this.cryptoService.getTopCoins();
+
+      if (!isAiMarketCoinList(marketData)) {
+        throw new Error('Dữ liệu thị trường không hợp lệ.');
+      }
+
+      const topCoins = marketData;
       const coinSummary = topCoins
         .slice(0, 10) // Lấy top 10 coin cho phong phú
         .map(
@@ -50,9 +83,13 @@ Quy tắc:
         },
       });
 
-      return response.text || 'Xin lỗi, AI chưa thể đưa ra câu trả lời lúc này.';
-    } catch (error: any) {
-      console.error('Lỗi Gemini API:', error.message);
+      return (
+        response.text || 'Xin lỗi, AI chưa thể đưa ra câu trả lời lúc này.'
+      );
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Lỗi không xác định';
+      console.error('Lỗi Gemini API:', errorMessage);
       return 'Đã xảy ra lỗi khi kết nối với AI Copilot. Vui lòng thử lại sau!';
     }
   }
