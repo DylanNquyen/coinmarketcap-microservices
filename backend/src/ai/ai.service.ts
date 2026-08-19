@@ -1,7 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, type HttpOptions } from '@google/genai';
 import { CryptoService } from '../crypto/crypto.service';
 
+const GEMINI_HTTP_OPTIONS = {
+  timeout: 12_000,
+  retryOptions: {
+    attempts: 3,
+    initialDelay: 0.5,
+    maxDelay: 2,
+    expBase: 2,
+    jitter: 1,
+    httpStatusCodes: [429, 503],
+  },
+} satisfies HttpOptions;
 
 interface AiMarketCoin {
   name: string;
@@ -35,7 +46,10 @@ export class AiService {
 
   constructor(private readonly cryptoService: CryptoService) {
     const apiKey = process.env.GEMINI_API_KEY || 'GEMINI_API_KEY';
-    this.ai = new GoogleGenAI({ apiKey });
+    this.ai = new GoogleGenAI({
+      apiKey,
+      httpOptions: GEMINI_HTTP_OPTIONS,
+    });
   }
 
   async askCopilot(userPrompt: string): Promise<string> {
