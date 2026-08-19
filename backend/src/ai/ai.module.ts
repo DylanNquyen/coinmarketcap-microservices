@@ -6,10 +6,7 @@ import { AiController } from './ai.controller';
 import { AiService } from './ai.service';
 
 @Module({
-  imports: [
-    ConfigModule,
-    CryptoModule,
-  ],
+  imports: [ConfigModule, CryptoModule],
   controllers: [AiController],
   providers: [AiService],
 })

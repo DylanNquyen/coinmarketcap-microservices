@@ -52,8 +52,7 @@ export class CryptoGateway
   private isRefreshing = false;
 
   private readonly refreshIntervalMs =
-    Number(process.env.COIN_REFRESH_INTERVAL_MS) ||
-    DEFAULT_REFRESH_INTERVAL_MS;
+    Number(process.env.COIN_REFRESH_INTERVAL_MS) || DEFAULT_REFRESH_INTERVAL_MS;
 
   constructor(private readonly cryptoService: CryptoService) {}
 
@@ -84,15 +83,13 @@ export class CryptoGateway
   private startMarketRefresh(): void {
     this.refreshSubscription?.unsubscribe();
 
-    this.refreshSubscription = interval(
-      this.refreshIntervalMs,
-    ).subscribe(() => {
-      void this.refreshMarketData();
-    });
-
-    console.log(
-      `🔄 CoinGecko refresh interval: ${this.refreshIntervalMs}ms`,
+    this.refreshSubscription = interval(this.refreshIntervalMs).subscribe(
+      () => {
+        void this.refreshMarketData();
+      },
     );
+
+    console.log(`🔄 CoinGecko refresh interval: ${this.refreshIntervalMs}ms`);
   }
 
   private async refreshMarketData(): Promise<void> {
@@ -104,8 +101,7 @@ export class CryptoGateway
     this.isRefreshing = true;
 
     try {
-      const freshCoins =
-        (await this.cryptoService.getTopCoins()) as CoinData[];
+      const freshCoins = (await this.cryptoService.getTopCoins()) as CoinData[];
 
       // Khi CoinGecko lỗi hoặc rate-limit, giữ cache cũ.
       if (!Array.isArray(freshCoins) || freshCoins.length === 0) {
@@ -124,24 +120,22 @@ export class CryptoGateway
 
         return {
           ...coin,
-          isUp: previousCoin
-            ? coin.price >= previousCoin.price
-            : undefined,
+          isUp: previousCoin ? coin.price >= previousCoin.price : undefined,
         };
       });
 
       const bitcoin = freshCoins.find((coin) => coin.id === 'bitcoin');
 
-if (bitcoin) {
-  console.log('BTC snapshot:', {
-    price: bitcoin.price,
-    priceChange1h: bitcoin.priceChange1h,
-    priceChange24h: bitcoin.priceChange24h,
-    priceChange7d: bitcoin.priceChange7d,
-    lastUpdated: bitcoin.lastUpdated,
-    fetchedAt: new Date().toISOString(),
-  });
-}
+      if (bitcoin) {
+        console.log('BTC snapshot:', {
+          price: bitcoin.price,
+          priceChange1h: bitcoin.priceChange1h,
+          priceChange24h: bitcoin.priceChange24h,
+          priceChange7d: bitcoin.priceChange7d,
+          lastUpdated: bitcoin.lastUpdated,
+          fetchedAt: new Date().toISOString(),
+        });
+      }
 
       this.server.emit('price_updates', this.cachedCoins);
 

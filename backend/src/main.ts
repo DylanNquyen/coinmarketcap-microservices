@@ -18,4 +18,4 @@ async function bootstrap() {
   await app.listen(3001);
   console.log('Backend Monolith đang chạy tại: http://localhost:3001/api');
 }
-bootstrap();
+void bootstrap();
